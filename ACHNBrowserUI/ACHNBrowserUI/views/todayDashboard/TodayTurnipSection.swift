@@ -10,42 +10,40 @@ import SwiftUI
 import Backend
 
 struct TodayTurnipSection: View {
+    @Environment(\.currentDate) private var currentDate
     @EnvironmentObject private var turnipService: TurnipPredictionsService
     
     var isSunday: Bool {
-        Calendar.current.component(.weekday, from: Date()) == 1
+        Calendar.current.component(.weekday, from: currentDate) == 1
     }
     
     var body: some View {
-        // MARK: - Turnip Card
-        Section(header: SectionHeaderView(text: "Turnips", icon: "dollarsign.circle.fill")) {
-            HStack {
-                Image("icon-turnip")
-                    .resizable()
-                    .aspectRatio(1, contentMode: .fit)
-                    .frame(maxWidth: 33)
-                Group {
-                    if isSunday {
-                        Text("Today is sunday, don't forget to buy more turnips and fill your buy price.")
-                    } else if turnipService.predictions?.todayAverages == nil || turnipService.predictions?.todayAverages?.isEmpty == true {
-                        Text("Your turnips predictions will be displayed here once you fill in some prices.")
-                    }  else {
-                        Text("Today's average price should be around ")
-                            + Text("\(turnipService.predictions!.todayAverages![0])")
-                                .foregroundColor(Color("ACSecondaryText"))
-                            + Text(" in the morning, and ")
-                            + Text("\(turnipService.predictions!.todayAverages![1])")
-                                .foregroundColor(Color("ACSecondaryText"))
-                            + Text(" this afternoon.")
-                    }
+        HStack {
+            Image("icon-turnip")
+                .resizable()
+                .aspectRatio(1, contentMode: .fit)
+                .frame(maxWidth: 33)
+            Group {
+                if isSunday {
+                    Text("Today is sunday, don't forget to buy more turnips and fill your buy price.")
+                } else if turnipService.predictions?.todayAverages == nil || turnipService.predictions?.todayAverages?.isEmpty == true {
+                    Text("Your turnips predictions will be displayed here once you fill in some prices.")
+                }  else {
+                    Text("Today's average price should be around ")
+                        + Text("\(turnipService.predictions!.todayAverages![0])")
+                        .foregroundColor(.acSecondaryText)
+                        + Text(" in the morning, and ")
+                        + Text("\(turnipService.predictions!.todayAverages![1])")
+                        .foregroundColor(.acSecondaryText)
+                        + Text(" this afternoon.")
                 }
-                .font(.system(.body, design: .rounded))
-                .foregroundColor(.acText)
-                
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical)
+            .font(.system(.body, design: .rounded))
+            .foregroundColor(.acText)
+            
         }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical)
     }
 }
 
@@ -55,8 +53,7 @@ struct TodayTurnipSection_Previews: PreviewProvider {
             List {
                 TodayTurnipSection()
             }
-            .listStyle(GroupedListStyle())
-            .environment(\.horizontalSizeClass, .regular)
+            .listStyle(InsetGroupedListStyle())
         }
         .previewLayout(.fixed(width: 375, height: 500))
     }

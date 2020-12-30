@@ -16,13 +16,13 @@ struct ItemDetailView: View {
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @EnvironmentObject private var musicPlayer: MusicPlayerManager
 
-    @ObservedObject private var itemViewModel: ItemDetailViewModel
+    @StateObject private var itemViewModel: ItemDetailViewModel
     
     @State private var displayedVariant: Variant?
     @State private var selectedSheet: Sheet.SheetType?
 
     init(item: Item) {
-        self.itemViewModel = ItemDetailViewModel(item: item)
+        self._itemViewModel = StateObject(wrappedValue: ItemDetailViewModel(item: item))
     }
 
     private func makeShareContent() -> [Any] {
@@ -33,8 +33,7 @@ struct ItemDetailView: View {
                                        recipe: itemViewModel.recipe,
                                        displayedVariant: $displayedVariant)
                 }
-                .listStyle(GroupedListStyle())
-                .environment(\.horizontalSizeClass, .regular)
+                .listStyle(InsetGroupedListStyle())
                 .navigationBarTitle(Text(itemViewModel.item.localizedName.capitalized),
                                     displayMode: .large)
             }
@@ -51,6 +50,7 @@ struct ItemDetailView: View {
             ItemDetailInfoView(item: itemViewModel.item,
                                recipe: itemViewModel.recipe,
                                displayedVariant: $displayedVariant)
+                .listRowBackground(Color.acSecondaryBackground)
             Group {
                 if itemViewModel.item.variations != nil {
                     variantsSection
@@ -63,7 +63,7 @@ struct ItemDetailView: View {
                 if !itemViewModel.item.metas.isEmpty {
                     keywordsSection
                 }
-            }
+            }.listRowBackground(Color.acSecondaryBackground)
             
             Group {
                 if !itemViewModel.setItems.isEmpty {
@@ -93,19 +93,15 @@ struct ItemDetailView: View {
                 if itemViewModel.item.isCritter {
                     ItemDetailSeasonSectionView(item: itemViewModel.item)
                 }
-            }
+            }.listRowBackground(Color.acSecondaryBackground)
             
             listsSection
         }
-        .listStyle(GroupedListStyle())
-        .environment(\.horizontalSizeClass, .regular)
+        .listStyle(InsetGroupedListStyle())
         .onAppear(perform: {
             self.displayedVariant = nil
             self.itemViewModel.setupItems()
         })
-        .onDisappear {
-            self.itemViewModel.cancellable?.cancel()
-        }
         .navigationBarItems(trailing: navButtons)
         .navigationBarTitle(Text(itemViewModel.item.localizedName.capitalized), displayMode: .large)
         .sheet(item: $selectedSheet) {
@@ -130,7 +126,6 @@ extension ItemDetailView {
             LikeButtonView(item: itemViewModel.item,
                            variant: displayedVariant).imageScale(.large)
                 .safeHoverEffectBarItem(position: .trailing)
-            Spacer(minLength: 12)
             shareButton
         }
     }
@@ -140,7 +135,7 @@ extension ItemDetailView {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
                     ForEach(itemViewModel.item.metas, id: \.self) { meta in
-                        NavigationLink(destination: LazyView(ItemsListView(category: .other, keyword: meta))) {
+                        NavigationLink(destination: LazyView(ItemsView(category: .other, keyword: meta))) {
                                                                     ItemStyleBadgeView(title: meta)
                         }
                     }
@@ -176,8 +171,7 @@ extension ItemDetailView {
                         FeedbackGenerator.shared.triggerSelection()
                     }
             }
-            LikeButtonView(item: itemViewModel.item,
-                           variant: self.itemViewModel.item.variations?.firstIndex(of: variant) == 0 ? nil : variant)
+            LikeButtonView(item: itemViewModel.item, variant: variant)
         }
     }
     
@@ -207,26 +201,6 @@ extension ItemDetailView {
         }
     }
     
-    private var listingSection: some View {
-        Section(header: SectionHeaderView(text: "Nookazon listings", icon: "cart.fill")) {
-            if itemViewModel.loading {
-                RowLoadingView(isLoading: .constant(true))
-            }
-            if !itemViewModel.listings.isEmpty {
-                ForEach(itemViewModel.listings.filter { $0.active && $0.selling }, content: { listing in
-                    Button(action: {
-                        self.selectedSheet = .safari(URL.nookazon(listing: listing)!)
-                    }) {
-                        ListingRow(listing: listing)
-                    }
-                })
-            } else if !itemViewModel.loading {
-                Text("No listings found on Nookazon")
-                    .foregroundColor(.secondary)
-            }
-        }
-    }
-    
     private var listsSection: some View {
         Section(header: SectionHeaderView(text: "Your items lists", icon: "list.bullet")) {
             if subscriptionManager.subscriptionStatus == .subscribed || collection.lists.isEmpty {
@@ -234,7 +208,7 @@ extension ItemDetailView {
                     self.selectedSheet = .userListForm(editingList: nil)
                 }) {
                     Text("Create a new list").foregroundColor(.acHeaderBackground)
-                }
+                }.listRowBackground(Color.acSecondaryBackground)
             }
             ForEach(collection.lists) { list in
                 HStack {
@@ -250,9 +224,11 @@ extension ItemDetailView {
                         self.collection.addItems(for: list.id, items: [self.itemViewModel.item])
                     }
                 }
+                .listRowBackground(Color.acSecondaryBackground)
             }
             if subscriptionManager.subscriptionStatus != .subscribed && collection.lists.count >= 1 {
                 UserListSubscribeCallView(sheet: $selectedSheet)
+                    .listRowBackground(Color.acSecondaryBackground)
             }
         }
     }

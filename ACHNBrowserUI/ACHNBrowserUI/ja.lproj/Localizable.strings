@@ -102,7 +102,7 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 // AboutView
 "About" = "詳細";
 "The app" = "アプリ";
-"Souce code / report an issue" = "ソースコード / 問題の報告";
+"Source code / report an issue" = "ソースコード / 問題の報告";
 "Rate the app on the App Store" = "App Storeでアプリを評価";
 "Privacy Policy" = "プライバシーポリシー";
 "Terms of Use" = "利用規約";
@@ -304,7 +304,6 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 "Jock" = "Jock";  // TODO
 "Cranky" = "Cranky";  // TODO
 "Smug" = "Smug";  // TODO
-"Normal" = "Normal";  // TODO
 "Peppy" = "Peppy";  // TODO
 "Snooty" = "Snooty";  // TODO
 "Uchi" = "Uchi";  // TODO
@@ -380,6 +379,7 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 "bugs" = "ムシ";
 "fish" = "サカナ";
 "fossils" = "カセキ";
+"seaCreatures" = "Sea Creatures";
 // CategoriesView
 "Nature" = "自然";
 "Wardrobe" = "Wardrobe";  // TODO
@@ -409,8 +409,8 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 "Available after unlocking the shovel in the story" = "ストーリーでスコップをアンロックしたあとに利用可能";
 "Available from Able Sisters shop only during Festive Season" = "フェスティバルシーズン中のみエイブルシスターズで購入可能";
 "Available from Able Sisters shop only" = "エイブルシスターズでのみ入手可能";
-"Available from either Mable's temporary shop or Able Sisters shop during Festive Season" = "お祭りシーズン中にきぬよの臨時ショップまたはエイブルシスターズから入手可能";
-"Available from either Mable's temporary shop or Able Sisters shop" = "きぬよの臨時ショップまたはエイブルシスターズから入手可能";
+"Available from either Mabel's temporary shop or Able Sisters shop during Festive Season" = "お祭りシーズン中にきぬよの臨時ショップまたはエイブルシスターズから入手可能";
+"Available from either Mabel's temporary shop or Able Sisters shop" = "きぬよの臨時ショップまたはエイブルシスターズから入手可能";
 "Available in all tiers of shops, including Timmy & Tommy before the shop is opened" = "ショップの全てのティアでつぶきち & まめきちから入手可能";
 "Available in Nook's Cranny (either upgrade tier) in the unique furniture slot" = "タヌキ商店の一品物の家具売り場で入手可能";
 "Available in Nook's Cranny (upgraded only)" = "タヌキ商店(改装後)で入手可能";
@@ -621,7 +621,6 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 "River (mouth)" = "川(河口)";
 "River" = "川";
 "Rover" = "Rover";  // TODO
-"Saharah" = "ローラン";
 "Season sale item" = "季節のセール品";
 "Season sale item\n*Not available in Europe" = "季節のセール品\n*ヨーロッパでは販売していません";
 "Seed bag" = "種袋";  // TODO
@@ -797,3 +796,22 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 // Added 2020-05-24
 "Music player" = "ミュージックプレイヤー";
 "Tracks" = "曲";
+
+// dodo code
+"dodocode.footer" = "Once your Dodo code is saved, it'll appear on the list.
+Please Ensure your gates are open before adding your code.
+You can delete and close your gates at any moment.
+Please be respectful, any Dodo code reported will be deleted.";
+"ACDodoCode.notification.title" = "A new Dodo code is available";
+"ACDodoCode.notification.subtitle" = "Someone opened their gates and posted a new Dodo code on the application, go check it out!";
+"ACComment.notification.title" = "Someone commented on your Dodo code";
+"ACComment.notification.subtitle" = "A new comment has been added on your Dodo code, go check it out!";
+"ACNew.notification.title" = "A news has been posted";
+"ACNew.notification.subtitle" = "A new article about the app or the game has been posted. Check it out in the app!";
+
+// dream code
+"ACDreamCode.notification.title" = "A new dream code is available";
+"ACDreamCode.notification.subtitle" = "Someone postet their islands dream code on the application, go check it out!";
+"dreamcode.footer" = "Once your Dream code is saved, it'll appear on the list.
+You can edit or delete your dream code anytime. You can't add furhter dream codes, as long as you already have added a dream code.
+Any Dodo code reported will be deleted.";

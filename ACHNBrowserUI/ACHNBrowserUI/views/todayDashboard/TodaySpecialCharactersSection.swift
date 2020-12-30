@@ -11,16 +11,12 @@ import SwiftUIKit
 import Backend
 
 struct TodaySpecialCharactersSection: View {
+    @Environment(\.currentDate) private var currentDate
     @State private var selectedCharacter: SpecialCharacters?
-    
-    private var timeString: String {
-        let f = DateFormatter()
-        f.setLocalizedDateFormatFromTemplate("HH:mm")
-        return f.string(from: Date())
-    }
+    @Namespace private var namespace
     
     private var currentIcon: String {
-        let hour = Calendar.current.component(.hour, from: Date())
+        let hour = Calendar.current.component(.hour, from: currentDate)
         if hour < 9 {
             return "sunrise.fill"
         } else if hour < 17 {
@@ -33,18 +29,13 @@ struct TodaySpecialCharactersSection: View {
     }
     
     var body: some View {
-        Section(header: SectionHeaderView(text: "Possible visitors", icon: "clock")) {
-            ZStack {
-                VStack(alignment: .leading) {
-                    timeCard
-                        .padding(.leading)
-                        .padding(.trailing)
-                    
-                    charactersCard
-                }
-                selectedCharacterPopup
-            }.listRowInsets(EdgeInsets())
-        }
+        VStack(alignment: .leading) {
+            timeCard
+                .padding(.leading)
+                .padding(.trailing)
+            
+            charactersCard
+        }.listRowInsets(EdgeInsets())
     }
     
     private var timeCard: some View {
@@ -64,10 +55,9 @@ struct TodaySpecialCharactersSection: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 25)
                     .foregroundColor(.acHeaderBackground)
-                Text(timeString)
+                Text(currentDate, style: .time)
                     .style(appStyle: .rowDetail)
             }
-            .frame(width: 90)
             .padding(16)
             .background(Color.acText.opacity(0.2))
             .mask(RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -76,32 +66,20 @@ struct TodaySpecialCharactersSection: View {
         }
     }
     
+    @ViewBuilder
     private var charactersCard: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 16) {
-                ForEach(SpecialCharacters.now(), id: \.self) { character in
-                    Image(character.rawValue)
+        if let selected = selectedCharacter {
+            HStack {
+                Spacer()
+                VStack(spacing: 12) {
+                    Image(selected.rawValue)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 50, height: 50)
-                        .onTapGesture {
-                            withAnimation(.spring(response: 0.30, dampingFraction: 0.6, blendDuration: 0)) {
-                                self.selectedCharacter = character
-                            }
-                    }
-                }
-            }
-            .padding(.leading)
-            .padding(.trailing)
-        }.padding(.bottom)
-    }
-    
-    private var selectedCharacterPopup: some View {
-        Group {
-            if selectedCharacter != nil {
-                VStack(spacing: 12) {
+                        .frame(width: 70, height: 70)
+                        .matchedGeometryEffect(id: selected.rawValue, in: namespace)
+                    
                     Text(selectedCharacter!.localizedName())
-                        .style(appStyle: .sectionHeader)
+                        .style(appStyle: .rowTitle)
                     Text(selectedCharacter!.timeOfTheDay())
                         .style(appStyle: .rowDetail)
                     Button(action: {
@@ -114,13 +92,27 @@ struct TodaySpecialCharactersSection: View {
                     .buttonStyle(PlainRoundedButton())
                     .accentColor(.acTabBarTint)
                 }
-                .frame(width: 200)
-                .padding(16)
-                .background(Color.acText.opacity(0.95).cornerRadius(16))
-                .transition(.scale)
-            } else {
-                EmptyView()
-            }
+                Spacer()
+            }.padding()
+        } else {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    ForEach(SpecialCharacters.forDate(currentDate), id: \.self) { character in
+                        Image(character.rawValue)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 50, height: 50)
+                            .onTapGesture {
+                                withAnimation(.interactiveSpring()) {
+                                    self.selectedCharacter = character
+                                }
+                            }
+                            .matchedGeometryEffect(id: character.rawValue, in: namespace)
+                    }
+                }
+                .padding(.leading)
+                .padding(.trailing)
+            }.padding(.bottom)
         }
     }
 }
@@ -131,8 +123,7 @@ struct TodaySpecialCharacters_Previews: PreviewProvider {
             List {
                 TodaySpecialCharactersSection()
             }
-            .listStyle(GroupedListStyle())
-            .environment(\.horizontalSizeClass, .regular)
+            .listStyle(InsetGroupedListStyle())
         }
     }
 }

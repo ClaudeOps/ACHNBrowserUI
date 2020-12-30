@@ -11,9 +11,9 @@ import Backend
 
 struct Sheet: View {
     enum SheetType: Identifiable {
-        case safari(URL), share(content: [Any])
+        case safari(URL)
+        case share(content: [Any])
         case about
-        case rearrange(viewModel: DashboardViewModel)
         case userListForm(editingList: UserList?)
         case customTasks(collection: UserCollection)
         case turnipsForm(subManager: SubscriptionManager)
@@ -21,6 +21,10 @@ struct Sheet: View {
         case settings(subManager: SubscriptionManager, collection: UserCollection)
         case designForm(editingDesign: Design?)
         case choreForm(chore: Chore?)
+        case villager(villager: Villager, subManager: SubscriptionManager, collection: UserCollection)
+        case dodoCodeForm(editing: DodoCode?)
+        case iconChooser(icon: Binding<String?>)
+        case dreamCodeForm(editing: DreamCode?)
 
         var id: String {
             switch self {
@@ -30,8 +34,6 @@ struct Sheet: View {
                 return "share"
             case .about:
                 return "about"
-            case .rearrange:
-                return "rearrange"
             case .settings:
                 return "about"
             case .turnipsForm:
@@ -46,50 +48,62 @@ struct Sheet: View {
                 return "designForm"
             case .choreForm:
                 return "choreForm"
+            case .villager:
+                return "villager"
+            case .dodoCodeForm:
+                return "dodoCodeForm"
+            case .iconChooser:
+                return "iconChooser"
+            case .dreamCodeForm:
+                return "dreamCodeForm"
             }
         }
     }
     
     let sheetType: SheetType
     
-    private func make() -> some View {
+    @ViewBuilder
+    var body: some View {
         switch sheetType {
         case .safari(let url):
-            return AnyView(SafariView(url: url))
+            SafariView(url: url)
         case .share(let content):
-            return AnyView(ActivityControllerView(activityItems: content,
-                                                  applicationActivities: nil))
+            ActivityControllerView(activityItems: content,
+                                                  applicationActivities: nil)
         case .about:
-            return AnyView(AboutView())
+            AboutView()
         case .settings(let subManager, let collection):
-            return AnyView(SettingsView()
+            SettingsView()
                 .environmentObject(subManager)
-                .environmentObject(collection))
+                .environmentObject(collection)
         case .turnipsForm(let subManager):
-            return AnyView(NavigationView {
+            NavigationView {
                 TurnipsFormView().environmentObject(subManager)
-            }.navigationViewStyle(StackNavigationViewStyle()))
+            }.navigationViewStyle(StackNavigationViewStyle())
         case .subscription(let source, let subManager):
-            return AnyView(SubscribeView(source: source).environmentObject(subManager))
+            SubscribeView(source: source).environmentObject(subManager)
         case .userListForm(let list):
-            return AnyView(UserListFormView(editingList: list))
+            UserListFormView(editingList: list)
         case .customTasks(let collection):
-            return AnyView(CustomTasksListView().environmentObject(collection))
+            CustomTasksListView().environmentObject(collection)
         case .designForm(let design):
             let viewModel = DesignFormViewModel(design: design)
-            return AnyView(DesignFormView(viewModel: viewModel))
-        case .rearrange(let viewModel):
-            return AnyView(NavigationView {
-                TodaySectionEditView(viewModel: viewModel)
-            }
-            .navigationViewStyle(StackNavigationViewStyle()))
+            DesignFormView(viewModel: viewModel)
         case .choreForm(let chore):
             let viewModel = ChoreFormViewModel(chore: chore)
-            return AnyView(ChoreFormView(viewModel: viewModel))
+            ChoreFormView(viewModel: viewModel)
+        case .villager(let villager, let subManager, let collection):
+            NavigationView {
+                VillagerDetailView(villager: villager, isPresentedInModal: true)
+                    .environmentObject(subManager)
+                    .environmentObject(collection)
+            }
+        case .dodoCodeForm(let editing):
+            DodoCodeFormView(isEditing: editing)
+        case .iconChooser(let icon):
+            IconChooserSheet(selectedIcon: icon)
+        case .dreamCodeForm(let editing):
+            DreamCodeFormView(isEditing: editing)
         }
-    }
-
-    var body: some View {
-        make()
     }
 }

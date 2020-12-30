@@ -23,18 +23,16 @@ struct TodayChoresSection: View {
     }
 
     var body: some View {
-        Section(header: SectionHeaderView(text: "Chores", icon: "checkmark.seal.fill")) {
-            NavigationLink(destination: ChoreListView()) {
-                VStack(alignment: .leading) {
-                    self.makeHeaderView()
-
-                    HStack(spacing: 15) {
-                        self.makeProgressView()
-                        self.makeRatioLabel()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
+        NavigationLink(destination: LazyView(ChoreListView())) {
+            VStack(alignment: .leading) {
+                self.makeHeaderView()
+                
+                HStack(spacing: 15) {
+                    self.makeProgressView()
+                    self.makeRatioLabel()
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
             }
         }
     }
@@ -50,10 +48,10 @@ struct TodayChoresSection: View {
     }
 
     private func makeProgressView() -> some View {
-        return ProgressView(progress: CGFloat(viewModel.completeChoresCount) / CGFloat(viewModel.totalChoresCount),
-                            trackColor: .acText,
-                            progressColor: .acHeaderBackground,
-                            height: 12)
+        ProgressBar(progress: CGFloat(viewModel.completeChoresCount) / CGFloat(viewModel.totalChoresCount),
+                    trackColor: .acText,
+                    progressColor: .acHeaderBackground,
+                    height: 12)
     }
 
     private func makeRatioLabel() -> some View {
@@ -65,16 +63,19 @@ struct TodayChoresSection: View {
     }
 }
 
+// MARK: - Preview
+
+#if DEBUG
 struct TodayCustomTasksSection_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             List {
                 TodayChoresSection()
             }
-            .listStyle(GroupedListStyle())
-            .environment(\.horizontalSizeClass, .regular)
+            .listStyle(InsetGroupedListStyle())
         }
         .previewLayout(.sizeThatFits)
         .environmentObject(UserCollection.shared)
     }
 }
+#endif

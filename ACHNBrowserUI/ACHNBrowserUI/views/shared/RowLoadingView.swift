@@ -9,19 +9,17 @@
 import SwiftUI
 
 struct RowLoadingView: View {
-    @Binding var isLoading: Bool
-    
     var body: some View {
         HStack {
             Spacer()
-            ActivityIndicator(isAnimating: $isLoading, style: .large)
+            ProgressView()
             Spacer()
-        }.background(Color.acSecondaryBackground)
+        }.listRowBackground(Color.acSecondaryBackground)
     }
 }
 
 struct RowLoadingView_Previews: PreviewProvider {
     static var previews: some View {
-        RowLoadingView(isLoading: .constant(true))
+        RowLoadingView()
     }
 }

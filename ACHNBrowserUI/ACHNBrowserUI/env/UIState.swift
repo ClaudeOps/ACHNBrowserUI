@@ -9,27 +9,55 @@
 import Foundation
 import SwiftUI
 import Backend
+import UI
+import SwiftUIKit
 
 class UIState: ObservableObject {
+    public static let shared = UIState()
+    
     enum Tab: Int {
         case dashboard, items, villagers, collection, turnips
     }
     
-    enum Route {
+    enum Route: Identifiable {
+        case dodo, news
         case item(item: Item)
         case villager(villager: Villager)
         
-        func makeDetailView() -> some View {
+        static let prefix = "achelperapp"
+        
+        var id: String {
             switch self {
-            case let .item(item):
-                return AnyView(ItemDetailView(item: item))
-            case let .villager(villager):
-                return AnyView(VillagerDetailView(villager: villager))
+            case .item(_): return "item"
+            case .villager(_): return "villager"
+            case .dodo: return "dodocodes"
+            case .news: return "news"
+            }
+        }
+
+        @ViewBuilder
+        func makeSheetView() -> some View {
+            NavigationView {
+                switch self {
+                case let .item(item):
+                    ItemDetailView(item: item)
+                        .environmentObject(SubscriptionManager.shared)
+                        .environmentObject(UserCollection.shared)
+                case let .villager(villager):
+                    VillagerDetailView(villager: villager)
+                case .dodo:
+                    DodoCodeListView()
+                        .environmentObject(DodoCodeService.shared)
+                        .environmentObject(CommentService.shared)
+                case .news:
+                    NewsList()
+                        .environmentObject(NewsArticleService.shared)
+                        .environmentObject(CommentService.shared)
+                }
             }
         }
     }
     
     @Published var selectedTab = Tab.dashboard
     @Published var route: Route?
-    @Published var routeEnabled = false
 }

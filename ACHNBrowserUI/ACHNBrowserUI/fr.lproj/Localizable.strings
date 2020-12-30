@@ -1,10 +1,10 @@
 /*
-Localizable.strings
-  ACHNBrowserUI
-
-  Created by Jan on 09.05.20.
-  Copyright © 2020 Thomas Ricouard. All rights reserved.
-*/
+ Localizable.strings
+ ACHNBrowserUI
+ 
+ Created by Jan on 09.05.20.
+ Copyright © 2020 Thomas Ricouard. All rights reserved.
+ */
 
 "Loading..." = "Chargement...";
 "Tap here to preview a notification" = "Appuyer ici pour voir une notification";
@@ -53,6 +53,7 @@ Localizable.strings
 "Currently Available" = "Disponible en ce moment";
 "%lld/%lld Bugs" = "%lld/%lld Insectes";
 "%lld/%lld Fish" = "%lld/%lld Poissons";
+"%lld/%lld Sea Creatures" = "%lld/%lld Créatures Marines";
 "%lld NEW" = "%lld NOUVEAUX";
 // TodayEventsSection
 "Events" = "Évènements";
@@ -74,7 +75,7 @@ Localizable.strings
 // TodayWhatsNewSection
 "What's New" = "Nouveautés";
 "See what's new in update %@" = "Découvrez les nouveautés de la mise à jour
- %@";
+%@";
 // TodaySubscribeSection
 "You're subscribed to AC Helper+. Thank you so much for you support!" = "Vous avez souscrit à AC Helper+. Merci beaucoup de votre support!";
 "If you enjoy the application, consider subscribing to AC Helper+, to get access to some awesome features and support us!" = "Si vous aimez l'application, vous pouvez souscrire à AC Helper+, et vous aurez accès à nouvelles fonctionnalités en plus de nous aider!";
@@ -86,8 +87,8 @@ Localizable.strings
 Vous aurez aussi accès à d'autres fonctionnalités, comme les prédictions sur le prix des navets et la possibilité de créer plus d'une liste d'objets! 📈";
 
 "ACHelperPlusDetails" = "À propos de la fonctionnalité de notification:
-Tous les jours à 8H et 12H vous allez recevoir une notification avec le prix moyen d'achat dans votre magasin.
-Plus vous rajouté de prix du jeux après lundi matin dans l'application, plus les prochaines prédictions seront précises!
+Tous les jours à 8H et 12H vous allez recevoir une notification avec le prix moyen d'achat de vos navets.
+En indiquant le prix de vos navets, vous augmentez la précision des prédictions !
 
 À propos de la fonctionnalité liste d'objets:
 Dans l'application gratuite, vous pouvez créer seulement une seule liste d'objets dans votre onglet collection.
@@ -106,7 +107,7 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 // AboutView
 "About" = "À propos";
 "The app" = "L'application";
-"Souce code / report an issue" = "Code source / signaler un problème";
+"Source code / report an issue" = "Code source / signaler un problème";
 "Contact / follow us on Twitter" = "Contactez / suivez nous sur Twitter";
 "Rate the app on the App Store" = "Mettre une note sur l'App Store";
 "Privacy Policy" = "Politique de Confidentialité";
@@ -128,6 +129,8 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 "Bugs" = "Insectes";
 "You caught them all!" = "Vous les avez tous attrapés!";
 "New this month" = "Nouveau ce mois-ci";
+"To catch now" = "À attraper maintenant";
+"To catch later" = "À attraper plus tard";
 "To catch" = "À attraper";
 "Leaving this month" = "Dernière chance";
 "Caught" = "Attrapés";
@@ -209,7 +212,7 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 "X-Small" = "Très Petite";
 "Small" = "Petite";
 "Medium" = "Moyenne";
-"Large" = "Grade";
+"Large" = "Grande";
 "X-Large" = "Très Grande";
 "Customizable: %@" = "Customisable: %@";
 "Yes" = "Oui";
@@ -253,7 +256,7 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 "To help us support the application and get background playing of all the musics, you can try out AC Helper+" = "Pour nous aider à supporter l'application et pouvoir jouer les musiques en arrière-plan, vous pouvez souscrire à AC Helper+";
 "%lld upcomingDailyNotifications" = "Vous allez recevoir %lld prochaines notifications.";
 "Profits estimates are computed using the average of the current period" = "Les bénéfices sont calculés par rapport au prix moyen de la période courante";
-"Day" = "Day";
+"Day" = "Jour";
 "AM" = "AM";
 "PM" = "PM";
 "Please add the amount of turnips you bought and for how much" = "Veuillez ajouter le nombre de navets achetés et pour quel prix";
@@ -276,7 +279,7 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 "Your in game prices" = "Vos prix dans le jeu";
 "Buy price" = "Prix d'achat";
 "Amount bought" = "Nombre acheté";
-"The more in game buy prices you'll add the better the predictions will be. Your buy price only won't give your correct averages. Add prices from the game as you get them daily." = "Plus vous aller rajouter vos prix d'achat dans le jeu plus les prochaines prédictions seront précises.";
+"The more in game buy prices you'll add the better the predictions will be. Your buy price only won't give your correct averages. Add prices from the game as you get them daily." = "En indiquant le prix de vos navets, vous augmentez la précision des prédictions.";
 "View on TurnipProphet" = "Voir sur TurnipProphet";
 "View Turnip.Exchange islands" = "Voir les îles de Turnip.Exchange";
 
@@ -396,6 +399,8 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 "bugs" = "Insectes";
 "fish" = "Poissons";
 "fossils" = "Fossiles";
+"seaCreatures" = "Créature Marines";
+"Clothing Other" = "Maillot de Bain";
 // CategoriesView
 "Nature" = "Nature";
 "Wardrobe" = "Garde-robe";
@@ -470,7 +475,7 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 "Flying near flowers" = "Vole prêt des fleurs";
 "On the ground" = "Au sol";
 "Flying" = "Vole dans les airs";
-"Shaking trees (hardwood or cedar only)" = "En secouant les abres (feuillus et cèdres seulement)";
+"Shaking trees (hardwood or cedar only)" = "En secouant les arbres (feuillus et cèdres seulement)";
 "On trees (any kind)" = "Sur les arbres (tout types)";
 "Disguised on shoreline" = "Déguisé sur le rivage";
 "Pushing snowballs" = "Pousse une boule de neige";
@@ -484,9 +489,9 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 "On rotten turnips" = "Sur les navets pourris";
 "Shaking trees" = "En secouant les arbres";
 "On white flowers" = "Sur les fleurs blanches";
-"Flying near trash (boots, tires, cans)" = "Vole près des ordures (bottes, pneus, canettes)";
+"Flying near trash (boots, tires, cans) or rotten turnips" = "Vole près des ordures (bottes, pneus, canettes) ou prêt des navets pourris";
 "Flying near blue/purple/black flowers" = "Vole près des fleurs bleues/violettes/noires";
-"Deguised under trees" = "Déguisé en feuille d'abres";
+"Deguised under trees" = "Déguisé en feuille d'arbres";
 "On villager" = "Sur le villageois";
 "Underground (dig where noise is loudest)" = "Sous le sol (creuser là où le bruit est le plus fort)";
 "Jolly Redd's Treasure Trawler" = "Sur le Rounarama(Bateau) de Rounard";
@@ -823,3 +828,127 @@ You can cancel anytime with your iTunes account settings. Any unused portion of 
 "Liked" = "Aimés";
 "Residents" = "Résidents";
 
+// Added 2020-06-06
+"Villager visits" = "Parler aux villageois";
+"Who have you talked to today? Find the villagers you have visited and tap the home icon on the villager’s page to keep track." = "Avez-vous parlé à vos villageois aujourd'hui ? Ajoutez vos villageois depuis leurs pages en touchant l'icône maison.";
+"Long press on a villager to see more info about them" = "Appuyez longtemps sur un villageois pour voir ses informations";
+
+// Added 2020-06-08
+"Medium w/Fin" = "Moyen avec un aileron";
+"Large w/Fin" = "Grand avec un aileron";
+"XX-Large" = "Très grand";
+"Long" = "Long";
+"Sea (rainy days)" = "Mer (jour de pluie)";
+"Flying near water" = "Vol près de l'eau";
+
+// Doco code
+"Please fill all the fields" = "Merci de remplir tous les champs";
+"Dodo code" = "Dodo code";
+"Dodo codes" = "Dodo codes";
+"This Dodo code is invalid" = "Ce Dodo code est invalide";
+"Island description" = "Description de l'île";
+"Native fruit" = "Fruit de départ";
+"Add your Dodo code" = "Ajoutez votre Dodo code";
+"Hemisphere: %@" = "Hémisphère: %@";
+"Delete" = "Supprimer";
+"Report" = "Signaler";
+"Latest Dodo code" = "Dernier Dodo code";
+
+"dodocode.footer" = "Une fois votre Dodo code ajouté il apparaitra dans la liste.
+Merci de vérifier que vos portes sont ouvertes avant d'ajouter votre code.
+Vous pourrez supprimer et ferme vos portes à tout moment.
+Merci d'être respecteux. Tout code signalé sera supprimé";
+"iCloud not enabled" = "iCloud n'est pas activé";
+"You need an iCloud account to add your Dodo code" = "Vous avez besoin d'iCloud pour ajouter votre Dodo code";
+"Do you really want to delete your Dodo code?" = "Voulez-vous vraiment supprimer vote Dodo code ?";
+"Do you really want to report this Dodo code?" = "Voulez-vous vraiment signaler ce Dodo Code ?";
+"Visitor" = "Visiteur";
+"Edit your Dodo code" = "Éditez votre Dodo code";
+"Get notified of new Dodo codes" = "Être notifié quand un code est posté";
+"To help us support the application and get notifications when a new Dodo code is posted, you can try out AC Helper+" = "Pour nous aider à supporter l'application et recevoir des notifications quand un nouveau Dodo codes est posté, vous pouvez souscrire à AC Helper+";
+"ACDodoCode.notification.title" = "Un nouveau Dodo code est disponible";
+"ACDodoCode.notification.subtitle" = "Quelqu'un a ouvert ses portes et a posté un Dodo code dans l'application!";
+
+// dodo code comments
+"Comments" = "Commentaires";
+"Be the first to leave a comment!" = "Soyez le premier à laisser un commentaire !";
+"%@ from %@" = "%@ de %@";
+"In order to add a comment you must add an island name and a username. Tap here to add them in settings" = "Pour ajouter un nouveau commentaire vous devez ajouter votre nom d'île et un nom d'utilisateur dans les réglages. Tapez ici pour les ajouter";
+"Add your comment" = "Ajouter votre commentaire";
+"Send" = "Envoyer";
+"In game name / username" = "Nom du joueur / nom d'utilisateur";
+"You need to have an iCloud account in your device settings in order to add comments" = "Vous devez avoir un compte iCloud dans les réglages de votre appareil pour ajouter des commentaires";
+"ACComment.notification.title" = "Nouveau commentaire sur votre Dodo code";
+"ACComment.notification.subtitle" = "Un nouveau commentaire a été posté sur votre Dodo code!";
+
+"Contact / follow us on Instagram" = "Contactez / suivez nous sur Instagram";
+"Meet the community of ACNH Connect" = "Rencontrez la communauté de ACNH Connect";
+
+"ACNew.notification.title" = "Une news a été postée";
+"ACNew.notification.subtitle" = "Un nouvelle article de news sur le jeu ou l'app est disponible!";
+
+"Get notified when a news is posted" = "Être notifié quand une news est publiée";
+
+"Underwater" = "Sous l'eau";
+"Movement speed:" = "Vitesse de déplacement:";
+"Very slow" = "Très lent";
+"Slow" = "Lent";
+"Very fast" = "Très rapide";
+"Fast" = "Rapide";
+"Stationary" = "Stationnaire";
+
+// Added 2020-06-07
+"Fishing tourney" = "Tournoi de pêche";
+"You turnips predictions will be displayed here one you fill in somes prices." = "Vos prévisions de prix de vente de navets seront affichées ici, remplissez les prix pour l'afficher.";
+"Able Sisters" = "Soeurs Doigts de Fées";
+"Available from Able Sisters shop only" = "Disponible uniquement chez les Soeurs Doigts de Fées";
+"Available from either Mabel's tempory shop or Able Sisters shop" = "Disponible dans la boutique temporaire de Layette (Visiteur sur la place) ou chez des Soeurs Doigts de Fées";
+"Available in Nook's Cranny (either upgrade tier) in the unique furniture slot" = "Disponible dans la Boutique Nook (boutique niveau 2), objet en un exemplaire";
+"Available in Nook's Cranny (upgraded only), in the third unique furniture slot" = "Disponible dans la Boutique Nook (boutique seulement), objet en un exemplaire (3ème espace)";
+"Available in all tiers of shops, including Timmy & Tommy before the shop is opened" = "Disponible dans les deux boutiques (niveau 1 et 2), y compris via Méli et Mélo avant l'ouverture de la boutique";
+"Available in the re-buyable slot in Nook's Cranny" = "Achetable en plusieurs exemplaires dans la Boutique Nook";
+"Only available close the new year holiday" = "Disponible uniquement durant le nouvel ans";
+"Nook's Cranny" = "Boutique Nook";
+"Crafting" = "Craft";
+"Sea Creatures" = "Créatures marines";
+"River (clifftop)" = "Rivière (falaise)";
+"River (mouth)" = "Rivière (Embouchure)";
+"On villagers" = "Sur les villageois";
+"On rivers/ponds" = "Sur les rivières/ponts";
+"Assessing fossils" = "Après expertisation des fossiles";
+"Cyrus" = "Serge";
+"Only available during Wedding Season" = "Disponible uniquement durant l'évent : Saisons des Mariages";
+"Bug-Off" = "Insectosafari";
+"K.K. concert" = "Concert de Kéké";
+"K.K. concert, Nook Shopping Catalog" = "Concert de Kéké, Nook Shopping (Sélection du jour)";
+"Shaking a cedar tree (Festive Season)" = "Secouant des cèdres (Saison des Fêtes)";
+"Festive Season" = "Saison des Fêtes";
+"Shaking a hardwood or cedar tree" = "Secouant un feuillu/cèdre";
+"Don't return lost item" = "Objet perdu";
+"Wrapping a present" = "Emballer un cadeau";
+"On ground (Mushroom Season)" = "Au sol (Saison des Champignons)";
+"Mushroom Season" = "Saison des Champignons";
+"Recycle box" = "Boîte de recyclage";
+
+
+// dream code
+"ACDreamCode.notification.title" = "Un nouveau Dodo Onirique est disponible";
+"ACDreamCode.notification.subtitle" = "Quelqu'un a posté un nouveau code onirique dans l'application! ";
+"dreamcode.footer" = "Une fois votre code onirique ajouté il apparaitra dans la liste.
+Vous pourrez le supprimer à tout moment.
+Merci d'être respecteux. Tout code signalé sera supprimé";
+
+// Summer Patch II - added 2020-08-02
+"Dream code" = "Code onirique";
+"Dream codes" = "Codes onirique";
+"This Dream code is invalid" = "Ce code onirique est invalide";
+"Edit your Dream code" = "Editer votre code";
+"Add your Dream code" = "Ajoutez votre code";
+"Get notified of new dream codes" = "Être notifié quand un code est posté";
+"You need an iCloud account to add your dream code" = "Vous devez avoir un compte iCloud pour ajouter un code Onirique";
+"Do you really want to report this dream code?" = "Vous voulez vraiment reporter ce code ?";
+"Do you really want to delete your dream code?" = "Vous voulez vraiment supprimer ce code ?";
+"Sort" = "Trier par";
+"creationDate" = "Date";
+"upvotes" = "Votes";
+"Latest Dream Code" = "Dernier Code Onirique";

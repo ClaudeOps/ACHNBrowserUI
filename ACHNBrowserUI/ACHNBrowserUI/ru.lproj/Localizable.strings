@@ -104,7 +104,7 @@
 // AboutView
 "About" = "Про";
 "The app" = "Приложение";
-"Souce code / report an issue" = "Исходный код / сообщить про проблему";
+"Source code / report an issue" = "Исходный код / сообщить про проблему";
 "Rate the app on the App Store" = "Оцените приложение в App Store";
 "Privacy Policy" = "Политика конфиденциальности";
 "Terms of Use" = "Условия использования";
@@ -383,6 +383,7 @@
 "bugs" = "Насекомые";
 "fish" = "Рыба";
 "fossils" = "Ископаемые";
+"seaCreatures" = "Sea Creatures";
 // CategoriesView
 "Nature" = "Природа";
 "Wardrobe" = "Гардероб";
@@ -396,3 +397,23 @@
 "See less" = "Увидеть меньше";
 
 // to be continued
+
+// dodo code
+"dodocode.footer" = "Once your Dodo code is saved, it'll appear on the list.
+Please Ensure your gates are open before adding your code.
+You can delete and close your gates at any moment.
+Please be respectful, any Dodo code reported will be deleted.";
+"ACDodoCode.notification.title" = "A new Dodo code is available";
+"ACDodoCode.notification.subtitle" = "Someone opened their gates and posted a new Dodo code on the application, go check it out!";
+"ACComment.notification.title" = "Someone commented on your Dodo code";
+"ACComment.notification.subtitle" = "A new comment has been added on your Dodo code, go check it out!";
+
+"ACNew.notification.title" = "A news has been posted";
+"ACNew.notification.subtitle" = "A new article about the app or the game has been posted. Check it out in the app!";
+
+// dream code
+"ACDreamCode.notification.title" = "A new dream code is available";
+"ACDreamCode.notification.subtitle" = "Someone postet their islands dream code on the application, go check it out!";
+"dreamcode.footer" = "Once your Dream code is saved, it'll appear on the list.
+You can edit or delete your dream code anytime. You can't add furhter dream codes, as long as you already have added a dream code.
+Any Dodo code reported will be deleted.";

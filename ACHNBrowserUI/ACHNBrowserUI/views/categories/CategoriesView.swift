@@ -14,9 +14,11 @@ struct CategoriesView: View {
     // MARK: - Vars
     let categories: [Backend.Category]
     
-    @EnvironmentObject var items: Items
-    @ObservedObject var viewModel = CategoriesSearchViewModel()
-    @State var isLoadingData = false
+    @EnvironmentObject private var items: Items
+    @StateObject private var viewModel = CategoriesSearchViewModel()
+    @State private var isLoadingData = false
+    @State private var isNatureExpanded = false
+    @State private var isWardrobeExpanded = false
 
     // MARK: - Computed vars
     private var searchCategories: [(Backend.Category, [Item])] {
@@ -31,16 +33,18 @@ struct CategoriesView: View {
             List {
                 Section(header: SearchField(searchText: $viewModel.searchText).id("searchField")) {
                     if viewModel.searchText.isEmpty {
-                        makeSubCategories(name: "Nature",
+                        makeSubCategories(isExpanded: $isNatureExpanded,
+                                          name: "Nature",
                                           icon: Backend.Category.fossils.iconName(),
                                           categories: Backend.Category.nature())
-                        makeSubCategories(name: "Wardrobe",
+                        makeSubCategories(isExpanded: $isWardrobeExpanded,
+                                          name: "Wardrobe",
                                           icon: Backend.Category.dressup.iconName(),
                                           categories: Backend.Category.wardrobe())
                         makeCategories()
                     } else {
                         if viewModel.isLoadingData {
-                            RowLoadingView(isLoading: $isLoadingData)
+                            RowLoadingView()
                         } else if searchCategories.isEmpty {
                             Text("No results for \(viewModel.searchText)")
                                 .foregroundColor(.acSecondaryText)
@@ -50,13 +54,14 @@ struct CategoriesView: View {
                     }
                 }
             }
+            .animation(.interactiveSpring())
             .listStyle(GroupedListStyle())
-            .navigationBarTitle(Text("Catalog"), displayMode: .automatic)
+            .navigationBarTitle(Text("Catalog"))
             .onReceive(viewModel.$isLoadingData) { self.isLoadingData = $0 }
             .modifier(DismissingKeyboardOnSwipe())
       
             
-            ItemsListView(category: .housewares)
+            ItemsView(category: .housewares)
         }
     }
 }
@@ -69,21 +74,34 @@ extension CategoriesView {
         }
     }
     
-    private func makeSubCategories(name: String, icon: String, categories: [Backend.Category]) -> some View {
-        NavigationLink(destination: LazyView(CategoryDetailView(categories: categories))
-            .navigationBarTitle(LocalizedStringKey(name))) {
-                HStack {
-                    Image(icon)
-                        .renderingMode(.original)
-                        .resizable()
-                        .frame(width: 46, height: 46)
-                    Text(LocalizedStringKey(name))
-                        .style(appStyle: .rowTitle)
-                    Spacer()
-                    Text("\(items.itemsCount(for: categories))")
-                        .style(appStyle: .rowDescription)
+    private func makeSubCategories(isExpanded: Binding<Bool>, name: String, icon: String, categories: [Backend.Category]) -> some View {
+        DisclosureGroup(isExpanded: isExpanded,
+            content: {
+                Section {
+                    ForEach(categories, id: \.rawValue) { category in
+                        CategoryRowView(category: category)
+                    }
                 }
-        }
+            },
+            label: {
+                Button(action: {
+                    isExpanded.wrappedValue.toggle()
+                }, label: {
+                    HStack {
+                        Image(icon)
+                            .renderingMode(.original)
+                            .resizable()
+                            .frame(width: 46, height: 46)
+                        Text(LocalizedStringKey(name))
+                            .style(appStyle: .rowTitle)
+                        Spacer()
+                        Text("\(items.itemsCount(for: categories))")
+                            .style(appStyle: .rowDescription)
+                    }
+                })
+            })
+            .listRowBackground(Color.acSecondaryBackground)
+            .accentColor(.acText)
     }
 
     private func searchSection(category: Backend.Category, items: [Item]) -> some View {
@@ -96,7 +114,7 @@ extension CategoriesView {
     private func searchItemRow(item: Item) -> some View {
         NavigationLink(destination: LazyView(ItemDetailView(item: item))) {
             ItemRowView(displayMode: .large, item: item)
-        }
+        }.listRowBackground(Color.acSecondaryBackground)
     }
 }
 

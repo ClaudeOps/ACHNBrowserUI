@@ -10,19 +10,23 @@ import SwiftUI
 import Backend
 
 struct ActiveCritterSections: View {
+    @Environment(\.currentDate) private var currentDate
     @ObservedObject var viewModel: ActiveCrittersViewModel
     @Binding var selectedTab: ActiveCrittersViewModel.CritterType
     
     private func sectionContent(critter: Item) -> some View {
         NavigationLink(destination: ItemDetailView(item: critter)) {
             ItemRowView(displayMode: .large, item: critter)
-        }
+        }.listRowBackground(Color.acSecondaryBackground)
     }
     
     private func makeSectionOrPlaceholder(title: String, icon: String, critters: [Item]) -> some View {
         Section(header: SectionHeaderView(text: title, icon: icon)) {
             if critters.isEmpty {
-                Text("You caught them all!").font(.body).fontWeight(.bold)
+                Text("You caught them all!")
+                    .font(.body)
+                    .fontWeight(.bold)
+                    .listRowBackground(Color.acSecondaryBackground)
             } else {
                 ForEach(critters, content: sectionContent)
             }
@@ -31,12 +35,15 @@ struct ActiveCritterSections: View {
     
     var body: some View {
         Group {
+            makeSectionOrPlaceholder(title: "To catch now",
+                                     icon: "calendar",
+                                     critters: viewModel.crittersInfo[selectedTab]?.toCatchNow ?? [])
+            makeSectionOrPlaceholder(title: "To catch later",
+                                     icon: "calendar",
+                                     critters: viewModel.crittersInfo[selectedTab]?.toCatchLater ?? [])
             makeSectionOrPlaceholder(title: "New this month",
                                      icon: "calendar.badge.plus",
                                      critters: viewModel.crittersInfo[selectedTab]?.new ?? [])
-            makeSectionOrPlaceholder(title: "To catch",
-                                     icon: "calendar",
-                                     critters: viewModel.crittersInfo[selectedTab]?.toCatch ?? [])
             makeSectionOrPlaceholder(title: "Leaving this month",
                                      icon: "calendar.badge.minus",
                                      critters: viewModel.crittersInfo[selectedTab]?.leaving ?? [])
@@ -47,47 +54,66 @@ struct ActiveCritterSections: View {
                         content: sectionContent)
             }
         }
+        .onAppear {
+            viewModel.updateCritters(for: currentDate)
+        }
     }
 }
 
 struct ActiveCrittersView: View {
-    @ObservedObject private var viewModel = ActiveCrittersViewModel(filterOutInCollection: true)
-    @State private var selectedTab = ActiveCrittersViewModel.CritterType.fish
+    @Environment(\.currentDate) private var currentDate
+    @StateObject private var viewModel = ActiveCrittersViewModel(filterOutInCollection: true)
+    @State private var selectedTab: ActiveCrittersViewModel.CritterType
+        
+    init(tab: ActiveCrittersViewModel.CritterType) {
+        _selectedTab = State(initialValue: tab)
+    }
     
-    var body: some View {
+    private func makeList(type: ActiveCrittersViewModel.CritterType) -> some View {
         List {
-            if (viewModel.crittersInfo[.fish]?.toCatch.isEmpty == true || viewModel.crittersInfo[.bugs]?.toCatch.isEmpty == true) &&
-                (viewModel.crittersInfo[.fish]?.caught.isEmpty == true || viewModel.crittersInfo[.bugs]?.caught.isEmpty == true) {
-                RowLoadingView(isLoading: .constant(true))
+            if viewModel.isLoading == true {
+                RowLoadingView()
             } else {
-                Picker(selection: $selectedTab, label: Text("")) {
-                    ForEach(ActiveCrittersViewModel.CritterType.allCases, id: \.self)
-                    { tab in
-                        Text(LocalizedStringKey(tab.rawValue)).tag(tab.rawValue)
-                    }
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .listRowBackground(Color.acBackground)
-                ActiveCritterSections(viewModel: viewModel, selectedTab: $selectedTab)
+                ActiveCritterSections(viewModel: viewModel,
+                                      selectedTab: .constant(type))
+                    .padding(.top, 16)
             }
         }
-        .gesture(DragGesture()
-            .onEnded { value in
-                if value.translation.width > 100 {
-                    self.selectedTab = ActiveCrittersViewModel.CritterType.fish
+        .listStyle(InsetGroupedListStyle())
+    }
+    
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            makeList(type: .fish)
+                .tabItem {
+                    Image("book-fish-icon")
                 }
-                else if value.translation.width < -100 {
-                    self.selectedTab = ActiveCrittersViewModel.CritterType.bugs
+                .tag(ActiveCrittersViewModel.CritterType.fish)
+            
+            makeList(type: .bugs)
+                .tabItem {
+                    Image("book-insect-icon")
                 }
-            })
-        .listStyle(GroupedListStyle())
-        .environment(\.horizontalSizeClass, .regular)
-        .navigationBarTitle("Active Critters")
+                .tag(ActiveCrittersViewModel.CritterType.bugs)
+            
+            makeList(type: .seaCreatures)
+                .tabItem {
+                    Image("book-dive-icon")
+                }
+                .tag(ActiveCrittersViewModel.CritterType.seaCreatures)
+        }
+        .background(Color.acBackground)
+        .tabViewStyle(PageTabViewStyle())
+        .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
+        .navigationBarTitle("Active Critters", displayMode: .inline)
+        .onAppear {
+            viewModel.updateCritters(for: currentDate)
+        }
     }
 }
 
 struct ActiveCrittersView_Previews: PreviewProvider {
     static var previews: some View {
-        ActiveCrittersView()
+        ActiveCrittersView(tab: .fish)
     }
 }

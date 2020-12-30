@@ -9,6 +9,7 @@
 import SwiftUI
 import SwiftUIKit
 import Backend
+import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @EnvironmentObject private var collection: UserCollection
@@ -16,12 +17,13 @@ struct SettingsView: View {
     @Environment(\.presentationMode) private var presentationMode
     @ObservedObject var appUserDefaults = AppUserDefaults.shared
     
-    @State private var isDocumentPickerPresented = false
-    @State private var documentPickderMode: UIDocumentPickerMode = .import
-    @State private var importedFile: URL?
+    private let types = [UTType("com.thomasricouard.ACNH.achelper")!]
+    
     @State private var showSuccessImportAlert = false
     @State private var showDeleteConfirmationAlert = false
-
+    @State private var isImporting = false
+    @State private var isExporting = false
+    
     var body: some View {
         NavigationView {
             Form {
@@ -29,22 +31,19 @@ struct SettingsView: View {
                 appSection
                 dataSection
             }
-            .listStyle(GroupedListStyle())
-            .environment(\.horizontalSizeClass, .regular)
+            .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("Preferences"), displayMode: .inline)
             .navigationBarItems(leading: closeButton)
-            .sheet(isPresented: $isDocumentPickerPresented,
-                   onDismiss: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        if let url = self.importedFile {
-                            self.showSuccessImportAlert = self.collection.processImportedFile(url: url)
-                        }
-                    }
-                   },
-                   content: { DocumentPickerView(url: self.collection.generateExportURL(),
-                                                 mode: self.documentPickderMode,
-                                                 importedFile: self.$importedFile) })
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }
+        .fileImporter(isPresented: $isImporting,
+                      allowedContentTypes: types) { result in
+            if let url = try? result.get() {
+                showSuccessImportAlert = collection.processImportedFile(url: url)
+            }
+        }
+        .fileMover(isPresented: $isExporting,
+                   file: collection.generateExportURL()) { _ in }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
     private var importSuccessAlert: Alert {
@@ -83,13 +82,21 @@ struct SettingsView: View {
                     .multilineTextAlignment(.trailing)
                     .font(.body)
                     .foregroundColor(.secondary)
-            }
+            }.listRowBackground(Color.acSecondaryBackground)
+            HStack {
+                Text("In game name / username")
+                Spacer()
+                TextField("Your username", text: $appUserDefaults.inGameName)
+                    .multilineTextAlignment(.trailing)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+            }.listRowBackground(Color.acSecondaryBackground)
             Picker(selection: $appUserDefaults.hemisphere,
                    label: Text("Hemisphere")) {
                     ForEach(Hemisphere.allCases, id: \.self) { hemispehere in
                         Text(LocalizedStringKey(hemispehere.rawValue.capitalized)).tag(hemispehere)
                     }
-            }
+            }.listRowBackground(Color.acSecondaryBackground)
             Picker(selection: $appUserDefaults.fruit,
                    label: Text("Starting fruit")) {
                     ForEach(Fruit.allCases, id: \.self) { fruit in
@@ -101,28 +108,28 @@ struct SettingsView: View {
                             Text(LocalizedStringKey(fruit.rawValue.capitalized)).tag(fruit)
                         }
                     }
-            }
+            }.listRowBackground(Color.acSecondaryBackground)
             
             Picker(selection: $appUserDefaults.nookShop,
                    label: Text("Nook shop")) {
                     ForEach(Infrastructure.NookShop.allCases, id: \.self) { shop in
                         Text(LocalizedStringKey(shop.rawValue)).tag(shop)
                     }
-            }
+            }.listRowBackground(Color.acSecondaryBackground)
             
             Picker(selection: $appUserDefaults.ableSisters,
                    label: Text("Able sisters")) {
                     ForEach(Infrastructure.AbleSisters.allCases, id: \.self) { sisters in
                         Text(LocalizedStringKey(sisters.rawValue.capitalized)).tag(sisters)
                     }
-            }
+            }.listRowBackground(Color.acSecondaryBackground)
             
             Picker(selection: $appUserDefaults.residentService,
                    label: Text("Residents service")) {
                     ForEach(Infrastructure.ResidentService.allCases, id: \.self) { service in
                         Text(LocalizedStringKey(service.rawValue.capitalized)).tag(service)
                     }
-            }
+            }.listRowBackground(Color.acSecondaryBackground)
         }
     }
     
@@ -148,6 +155,7 @@ struct SettingsView: View {
             }
             .disabled(subscriptionManager.inPaymentProgress)
             .opacity(subscriptionManager.inPaymentProgress ? 0.5 : 1.0)
+            .listRowBackground(Color.acSecondaryBackground)
         }
     }
     
@@ -159,7 +167,7 @@ struct SettingsView: View {
                 Text(collection.sizeOfArchivedState())
                     .font(.footnote)
                     .foregroundColor(.acSecondaryText)
-            }
+            }.listRowBackground(Color.acSecondaryBackground)
             
             HStack {
                 Text("Using iCloud sync")
@@ -167,41 +175,45 @@ struct SettingsView: View {
                 Image(systemName: collection.isCloudEnabled ? "icloud.fill" : "icloud.slash")
                     .foregroundColor(collection.isCloudEnabled ? .acTabBarBackground : .red)
                 
-            }
+            }.listRowBackground(Color.acSecondaryBackground)
             
             if collection.isCloudEnabled {
                 HStack {
                     Text("Synchronized with iCloud")
                     Spacer()
                     if !collection.isSynched {
-                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                        ProgressView()
                     } else {
                         Image(systemName: "checkmark.seal.fill")
                             .foregroundColor(.acTabBarBackground)
                     }
-                }
+                }.listRowBackground(Color.acSecondaryBackground)
             }
             
             Button(action: {
-                self.documentPickderMode = .exportToService
-                self.isDocumentPickerPresented = true
+                if collection.generateExportURL() != nil {
+                    isExporting = true
+                }
             }) {
                 Text("Export my collection").foregroundColor(.acHeaderBackground)
-            }
+            }.listRowBackground(Color.acSecondaryBackground)
             
             Button(action: {
-                self.documentPickderMode = .import
-                self.isDocumentPickerPresented = true
+                isImporting = true
             }) {
                 Text("Import a collection").foregroundColor(.acHeaderBackground)
-            }.alert(isPresented: $showSuccessImportAlert,
+            }
+            .listRowBackground(Color.acSecondaryBackground)
+            .alert(isPresented: $showSuccessImportAlert,
                     content: { self.importSuccessAlert })
             
             Button(action: {
                 self.showDeleteConfirmationAlert = true
             }) {
                 Text("Reset my collection").foregroundColor(.red)
-            }.alert(isPresented: $showDeleteConfirmationAlert,
+            }
+            .listRowBackground(Color.acSecondaryBackground)
+            .alert(isPresented: $showDeleteConfirmationAlert,
                     content: { self.deleteConfirmationAlert })
         }
     }

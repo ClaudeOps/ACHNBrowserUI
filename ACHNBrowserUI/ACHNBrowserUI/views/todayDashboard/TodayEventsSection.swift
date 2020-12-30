@@ -11,37 +11,37 @@ import ACNHEvents
 import Backend
 
 struct TodayEventsSection: View {
-
-    let todaysEvents = Date().events(for: AppUserDefaults.shared.hemisphere == .north ? .north : .south)
-    let nextEvent = Event.nextEvent()
-    
+    @Environment(\.currentDate) private var currentDate
 
     var body: some View {
-        Section(header: SectionHeaderView(text: "Events", icon: "flag.fill")) {
+        VStack(alignment: .leading) {
             VStack(alignment: .leading) {
-
-                VStack(alignment: .leading) {
-                    subsectionHeader("Currently").padding(.top, 4)
-
-                    if todaysEvents.isEmpty {
-                        self.makeLabel("No Events Today").padding(.vertical, 8)
-                    } else {
-                        ForEach(todaysEvents, id: \.self) { event in
-                            self.makeLabel(event.title())
-                        }
+                subsectionHeader("Currently").padding(.top, 4)
+                
+                if todaysEvents.isEmpty {
+                    self.makeLabel("No Events Today").padding(.vertical, 8)
+                } else {
+                    ForEach(todaysEvents, id: \.self) { event in
+                        self.makeLabel(event.title())
                     }
                 }
-
-                if nextEvent.1 != nil && !todaysEvents.contains(nextEvent.1!) {
-                    Divider()
-                    VStack(alignment: .leading) {
-                        subsectionHeader("Upcoming")
-                        self.makeCell(event: nextEvent)
-                    }
+            }
+            
+            if nextEvent.1 != nil && !todaysEvents.contains(nextEvent.1!) {
+                Divider()
+                VStack(alignment: .leading) {
+                    subsectionHeader("Upcoming")
+                    self.makeCell(event: nextEvent)
                 }
             }
         }
     }
+
+    private var todaysEvents: [Event] {
+        currentDate.events(for: AppUserDefaults.shared.hemisphere == .north ? .north : .south)
+    }
+
+    private var nextEvent: (Date, Event?) { Event.nextEvent(today: currentDate) }
 
     private func subsectionHeader(_ text: String) -> some View {
         Text(LocalizedStringKey(text))
@@ -88,8 +88,7 @@ struct TodayEventsSection_Previews: PreviewProvider {
             List {
                 TodayEventsSection()
             }
-            .listStyle(GroupedListStyle())
-            .environment(\.horizontalSizeClass, .regular)
+            .listStyle(InsetGroupedListStyle())
         }
         .previewLayout(.fixed(width: 375, height: 500))
     }

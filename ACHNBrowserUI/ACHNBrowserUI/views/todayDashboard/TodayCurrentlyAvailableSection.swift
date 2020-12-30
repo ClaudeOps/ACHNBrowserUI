@@ -10,52 +10,84 @@ import SwiftUI
 import Backend
 
 struct TodayCurrentlyAvailableSection: View {
+    @Environment(\.currentDate) private var currentDate
+    @StateObject private var viewModel = ActiveCrittersViewModel()
+    @State private var isNavigationLinkActive = false
+    @State private var openingTab: ActiveCrittersViewModel.CritterType = .fish
+    
     // MARK: - Body
     var body: some View {
-        Section(header: SectionHeaderView(text: "Currently Available", icon: "calendar")) {
-            NavigationLink(destination: ActiveCrittersView()) {
-               TodayCurrentlyAvailableSectionContent()
+        VStack {
+            NavigationLink(destination: ActiveCrittersView(tab: openingTab),
+                           isActive: $isNavigationLinkActive) {
+                
             }
-            .padding(.vertical)
-        }
-    }
-}
-
-struct TodayCurrentlyAvailableSectionContent: View {
-    @ObservedObject private var viewModel = ActiveCrittersViewModel()
-        
-    var body: some View {
-        Group {
+            
             if viewModel.crittersInfo[.bugs]?.active.isEmpty == false &&
                 viewModel.crittersInfo[.fish]?.active.isEmpty == false {
                 HStack(alignment: .top) {
-                    makeCell(for: .fish,
-                             caught: viewModel.crittersInfo[.fish]?.caught.count ?? 0,
-                             available: viewModel.crittersInfo[.fish]?.active.count ?? 0 ,
-                             numberNew: viewModel.crittersInfo[.fish]?.new.count ?? 0)
+                    Button {
+                        openingTab = .fish
+                        isNavigationLinkActive = true
+                    } label: {
+                        makeCell(for: .fish,
+                                 caught: viewModel.crittersInfo[.fish]?.caught.count ?? 0,
+                                 available: viewModel.crittersInfo[.fish]?.active.count ?? 0 ,
+                                 numberNew: viewModel.crittersInfo[.fish]?.new.count ?? 0)
+                    }.buttonStyle(BorderlessButtonStyle())
+                    
                     Divider()
-                    makeCell(for: .bugs,
-                             caught: viewModel.crittersInfo[.bugs]?.caught.count ?? 0,
-                             available: viewModel.crittersInfo[.bugs]?.active.count ?? 0,
-                             numberNew: viewModel.crittersInfo[.bugs]?.new.count ?? 0)
+                    Button {
+                        openingTab = .bugs
+                        isNavigationLinkActive = true
+                    } label: {
+                        makeCell(for: .bugs,
+                                 caught: viewModel.crittersInfo[.bugs]?.caught.count ?? 0,
+                                 available: viewModel.crittersInfo[.bugs]?.active.count ?? 0,
+                                 numberNew: viewModel.crittersInfo[.bugs]?.new.count ?? 0)
+                    }.buttonStyle(BorderlessButtonStyle())
                 }
             } else {
-                RowLoadingView(isLoading: .constant(true))
+                RowLoadingView()
+            }
+            Divider()
+            if viewModel.crittersInfo[.seaCreatures]?.active.isEmpty == true {
+                RowLoadingView()
+            } else {
+                Button {
+                    openingTab = .seaCreatures
+                    isNavigationLinkActive = true
+                } label: {
+                    makeCell(for: .seaCreatures,
+                             caught: viewModel.crittersInfo[.seaCreatures]?.caught.count ?? 0,
+                             available: viewModel.crittersInfo[.seaCreatures]?.active.count ?? 0 ,
+                             numberNew: viewModel.crittersInfo[.seaCreatures]?.new.count ?? 0)
+                }.buttonStyle(BorderlessButtonStyle())
             }
         }
+        .padding(.vertical)
+        .onAppear {
+            viewModel.updateCritters(for: currentDate)
+        }
     }
-    
     
     private func makeCell(for type: ActiveCrittersViewModel.CritterType,
                           caught: Int, available: Int, numberNew: Int = 0) -> some View {
         VStack(spacing: 0) {
             Image("\(type.imagePrefix())\(dayNumber())")
+                .renderingMode(.original)
                 .resizable()
                 .aspectRatio(1, contentMode: .fit)
                 .frame(width: 48)
             
             Group {
-                type == .bugs ? Text("\(caught)/\(available) Bugs") : Text("\(caught)/\(available) Fish")
+                if type == .bugs {
+                    Text("\(caught)/\(available) Bugs")
+                } else if type == .fish {
+                    Text("\(caught)/\(available) Fish")
+                } else {
+                    Text("\(caught)/\(available) Sea Creatures")
+                }
             }
             .font(.system(.headline, design: .rounded))
             .foregroundColor(.acText)
@@ -75,7 +107,7 @@ struct TodayCurrentlyAvailableSectionContent: View {
     }
     
     private func dayNumber() -> Int {
-        return Calendar.current.dateComponents([.day], from: Date()).day ?? 0
+        return Calendar.current.dateComponents([.day], from: currentDate).day ?? 0
     }
 }
 
@@ -85,8 +117,7 @@ struct TodayCurrentlyAvailableSection_Previews: PreviewProvider {
             List {
                 TodayCurrentlyAvailableSection()
             }
-            .listStyle(GroupedListStyle())
-            .environment(\.horizontalSizeClass, .regular)
+            .listStyle(InsetGroupedListStyle())
         }
         .previewLayout(.fixed(width: 375, height: 500))
     }

@@ -21,6 +21,7 @@ struct SearchField: View {
                 .foregroundColor(Color.acText)
                 .font(.headline)
                 .accentColor(.acHeaderBackground)
+                .textCase(nil)
             if !searchText.isEmpty {
                 Button(action: {
                     self.searchText = ""
@@ -56,7 +57,7 @@ struct SearchField_Previews: PreviewProvider {
                                                             
                 }
                 
-            }.listStyle(GroupedListStyle())
+            }.listStyle(InsetGroupedListStyle())
         }
     }
 }

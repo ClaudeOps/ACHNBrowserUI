@@ -25,99 +25,68 @@ extension View {
         return image
     }
     
-    func safeOnDrag(data: @escaping () -> NSItemProvider) -> AnyView {
-        if #available(iOS 13.4, *) {
-            return AnyView(onDrag(data))
-        } else {
-            return AnyView(self)
-        }
+    func safeOnDrag(data: @escaping () -> NSItemProvider) -> some View {
+        onDrag(data)
     }
     
-    func safeOnHover(action: @escaping (Bool) -> Void) -> AnyView {
-        if #available(iOS 13.4, *) {
-            return AnyView(onHover(perform: action))
-        } else {
-            return AnyView(self)
-        }
+    func safeOnHover(action: @escaping (Bool) -> Void) -> some View {
+        onHover(perform: action)
     }
     
-    func safeHoverEffect(_ type: SafeHoverEffectType = .automatic ) -> AnyView {
-        if #available(iOS 13.4, *) {
-            var hoverEffectType: HoverEffect
+    func safeHoverEffect(_ type: SafeHoverEffectType = .automatic ) -> some View {
+        var hoverEffectType: HoverEffect
+        
+        switch(type) {
+        case .lift:
+            hoverEffectType = .lift
             
-            switch(type) {
-            case .lift:
-                hoverEffectType = .lift
-                
-            case .highlight:
-                hoverEffectType = .highlight
-                
-            case .automatic:
-                fallthrough
-                
-            default:
-                hoverEffectType = .automatic
-            }
+        case .highlight:
+            hoverEffectType = .highlight
             
-            return AnyView(hoverEffect(hoverEffectType))
-        } else {
-            return AnyView(self)
+        case .automatic:
+            fallthrough
+            
+        default:
+            hoverEffectType = .automatic
         }
+        
+        return hoverEffect(hoverEffectType)
     }
     
-    func safeHoverEffectBarItem(position: BarItemPosition) -> AnyView {
-        let hoverPadding: CGFloat = 10
+    func safeHoverEffectBarItem(position: BarItemPosition) -> some View {
+        let hoverPadding: CGFloat = 4
         
         // For leading bar items, we need to apply a negative offset equal to the overall padding to imitate Apple's styling in UIKit
         let offset = position == .leading ? -hoverPadding : hoverPadding
         
-        return AnyView(self
+        return self
             .padding(hoverPadding)
             .safeHoverEffect()
             .offset(x:offset)
-        )
+        
     }
 
     func eraseToAnyView() -> AnyView { AnyView(self) }
 }
 
 extension View {
-    func propagateHeight<K: PreferenceKey>(_ key: K.Type) -> some View where K.Value == CGFloat? {
+    func propagate<K>(
+        _ transform: @escaping (CGRect) -> K.Value,
+        of source: Anchor<CGRect>.Source = .bounds,
+        using key: K.Type
+    ) -> some View where K: PreferenceKey {
         overlay(
             GeometryReader { proxy in
                 Color.clear
-                    .anchorPreference(key: key, value: .bounds, transform: { proxy[$0].height })
-            }
-        )
-    }
-    
-    func onHeightPreferenceChange<K: PreferenceKey>(_ key: K.Type = K.self, storeValueIn storage: Binding<CGFloat?>) -> some View where K.Value == CGFloat? {
-        onPreferenceChange(key, perform: { storage.wrappedValue = $0 })
-    }
-
-    func propagateWidth<K: PreferenceKey>(_ key: K.Type) -> some View where K.Value == CGFloat? {
-        overlay(
-            GeometryReader { proxy in
-                Color.clear
-                    .anchorPreference(key: key, value: .bounds, transform: { proxy[$0].width })
+                    .anchorPreference(key: key, value: source) { transform(proxy[$0]) }
             }
         )
     }
 
-    func onWidthPreferenceChange<K: PreferenceKey>(_ key: K.Type = K.self, storeValueIn storage: Binding<CGFloat?>) -> some View where K.Value == CGFloat? {
-        onPreferenceChange(key, perform: { storage.wrappedValue = $0 })
-    }
-
-    func propagateSize<K: PreferenceKey>(_ key: K.Type = K.self, storeValueIn storage: Binding<CGSize?>) -> some View where K.Value == CGSize? {
-        overlay(
-            GeometryReader { proxy in
-                Color.clear
-                    .anchorPreference(key: key, value: .bounds, transform: { proxy[$0].size })
-            }
-        )
-    }
-
-    func onSizePreferenceChange<K: PreferenceKey>(_ key: K.Type = K.self, storeValueIn storage: Binding<CGSize?>) -> some View where K.Value == CGSize? {
+    func storeValue<K: PreferenceKey>(
+        from key: K.Type = K.self,
+        in storage: Binding<K.Value>
+    ) -> some View where K.Value: Equatable {
         onPreferenceChange(key, perform: { storage.wrappedValue = $0 })
     }
 }

@@ -14,8 +14,9 @@ struct VillagersListView: View {
     private enum Filter: String, CaseIterable {
         case all, liked, residents
     }
-    
-    @ObservedObject var viewModel = VillagersViewModel()
+
+    @Environment(\.currentDate) private static var currentDate
+    @StateObject var viewModel = VillagersViewModel(currentDate: Self.currentDate)
     @State private var currentFilter = Filter.all
     
     var currentVillagers: [Villager] {
@@ -49,15 +50,16 @@ struct VillagersListView: View {
                             Text(LocalizedStringKey($0.rawValue.capitalized))
                         }
                     }.pickerStyle(SegmentedPickerStyle())
+                    .listRowBackground(Color.acSecondaryBackground)
                     
                     ForEach(currentVillagers) { villager in
                         NavigationLink(destination: VillagerDetailView(villager: villager)) {
                             self.makeRowView(villager: villager)
                         }
+                        .listRowBackground(Color.acSecondaryBackground)
                     }
                 }
-            }
-            .gesture(DragGesture()
+            }.gesture(DragGesture()
                 .onEnded { value in
                     if value.translation.width > 100 {
                         switch(self.currentFilter) {
@@ -95,7 +97,7 @@ struct VillagersListView: View {
                 VillagerDetailView(villager: viewModel.villagers.first!)
             } else {
                 List {
-                    RowLoadingView(isLoading: .constant(true))
+                    RowLoadingView()
                 }
             }
         }

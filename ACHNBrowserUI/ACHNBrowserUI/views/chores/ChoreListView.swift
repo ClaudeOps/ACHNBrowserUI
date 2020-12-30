@@ -6,8 +6,9 @@
 //  Copyright © 2020 Thomas Ricouard. All rights reserved.
 //
 
-import SwiftUI
 import Backend
+import SwiftUI
+import SwiftUIKit
 
 struct ChoreListView: View {
 
@@ -15,7 +16,8 @@ struct ChoreListView: View {
 
     @ObservedObject private var viewModel: ChoreListViewModel
     @State private var sheet: Sheet.SheetType?
-    @State private var editingMode: EditMode = .inactive
+    @State private var showActionSheet = false
+    @State private var isEditing = false
 
     // MARK: - Life cycle
 
@@ -31,14 +33,17 @@ struct ChoreListView: View {
                 Text("Add Chore")
                     .foregroundColor(.acHeaderBackground)
             })
+            .listRowBackground(Color.acSecondaryBackground)
 
             self.makeDescriptionView()
+                .listRowBackground(Color.acSecondaryBackground)
 
             ForEach(self.viewModel.chores, id: \.id) { chore in
                 ChoreListRowView(chore: chore)
+                    .listRowBackground(Color.acSecondaryBackground)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        if self.editingMode == .active {
+                        if self.isEditing {
                             self.sheet = .choreForm(chore: chore)
                         } else {
                             self.viewModel.toggleChore(chore)
@@ -50,8 +55,9 @@ struct ChoreListView: View {
         }
         .navigationBarTitle(Text("Chores"), displayMode: .automatic)
         .navigationBarItems(trailing: self.makeNavigationBarItems() )
-        .sheet(item: $sheet, content: { Sheet(sheetType: $0) })
-        .environment(\.editMode, self.$editingMode)
+        .sheet(item: $sheet) { Sheet(sheetType: $0) }
+        .environment(\.editMode, .constant(self.isEditing ? .active : .inactive))
+        .actionSheet(isPresented: $showActionSheet) { self.makeActionSheet() }
     }
 
     // MARK: - Private
@@ -61,20 +67,51 @@ struct ChoreListView: View {
             return EmptyView().eraseToAnyView()
         }
 
-        return MessageView(string: "Have a friend to visit? A gift to a villager? Track your chores and to-dos here.")
+        return MessageView("Have a friend to visit? A gift to a villager? Track your chores and to-dos here.")
             .eraseToAnyView()
     }
 
     private func makeNavigationBarItems() -> some View {
         HStack() {
-            EditButton()
-                .fixedSize()
-                .frame(width: 44, height: 44)
+            Button(action: {
+                self.isEditing.toggle()
+            }, label: {
+                Image(systemName: isEditing ? "pencil.circle.fill" : "pencil.circle")
+            })
+            .buttonStyle(BorderedBarButtonStyle())
+            .accentColor(Color.acText.opacity(0.2))
 
-            Button("Reset", action: self.viewModel.resetChores)
-                .fixedSize()
-                .disabled(viewModel.shouldDisableReset)
+            Button(action: {
+                self.showActionSheet.toggle()
+            }, label: {
+                Image(systemName: "slider.horizontal.3")
+            })
+            .buttonStyle(BorderedBarButtonStyle())
+            .accentColor(Color.acText.opacity(0.2))
         }
+    }
+
+    private func makeActionSheet() -> ActionSheet {
+        var buttons: [ActionSheet.Button] = []
+
+        if viewModel.shouldShowResetChores {
+            let resetTitle = Text("Reset Finished Chores")
+            let resetFinishedButton: ActionSheet.Button = .default(resetTitle) {
+                self.viewModel.resetChores()
+            }
+            buttons.append(resetFinishedButton)
+        }
+
+        let visibilityTitle = Text(viewModel.actionSheetVisibilityDescription)
+        let visibilityButton: ActionSheet.Button = .default(visibilityTitle) {
+            self.viewModel.toggleVisibility()
+        }
+        buttons.append(visibilityButton)
+
+        let cancelButton: ActionSheet.Button = .cancel()
+        buttons.append(cancelButton)
+
+        return ActionSheet(title: Text("Select an Action"), buttons: buttons)
     }
 }
 

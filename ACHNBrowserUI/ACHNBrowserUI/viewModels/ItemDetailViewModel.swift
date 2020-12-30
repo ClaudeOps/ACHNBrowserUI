@@ -18,10 +18,6 @@ class ItemDetailViewModel: ObservableObject {
     @Published var similarItems: [Item] = []
     @Published var thematicItems: [Item] = []
     
-    @Published var listings: [Listing] = []
-    @Published var loading: Bool = false
-    
-    var cancellable: AnyCancellable?
     var itemCancellable: AnyCancellable?
 
     init(item: Item) {
@@ -32,11 +28,7 @@ class ItemDetailViewModel: ObservableObject {
         self.itemCancellable = self.$item
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
-                guard let self = self else { return }
-                self.cancellable?.cancel()
-                self.listings = []
-                // self?.fetchListings()
-                
+                guard let self = self else { return }                
                 let items = Items.shared.categories.flatMap{ $0.value }
                 if let set = $0.set, set != "None" {
                     self.setItems = items.filter({ $0.set == set })
@@ -44,12 +36,12 @@ class ItemDetailViewModel: ObservableObject {
                     self.setItems = []
                 }
                 if let tag = $0.tag, tag != "None" {
-                    self.similarItems = items.filter({ $0.tag == tag }).prefix(30).map{ $0 }
+                    self.similarItems = items.filter({ $0.tag == tag }).map{ $0 }
                 } else {
                     self.similarItems = []
                 }
                 if let theme = $0.themes?.filter({ $0 != "None" }).first {
-                    self.thematicItems = items.filter({ $0.themes?.contains(theme) == true }).prefix(30).map{ $0 }
+                    self.thematicItems = items.filter({ $0.themes?.contains(theme) == true }).map{ $0 }
                 } else {
                     self.thematicItems = []
                 }
@@ -60,20 +52,5 @@ class ItemDetailViewModel: ObservableObject {
                     self.recipe = item
                 }
         }
-    }
-    
-    private func fetchListings() {
-        loading = true
-        cancellable = NookazonService.fetchListings(item: item)
-            .catch { _ in Just([]) }
-            .receive(on: RunLoop.main)
-            .sink { [weak self] listings in
-                self?.loading = false
-                self?.listings = listings
-        }
-    }
-    
-    deinit {
-        cancellable?.cancel()
     }
 }

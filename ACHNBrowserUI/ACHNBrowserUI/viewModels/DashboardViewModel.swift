@@ -11,8 +11,6 @@ import Combine
 import Backend
 
 class DashboardViewModel: ObservableObject {
-    @Published var recentListings: [Listing]?
-    @Published var island: Island?
     @Published var sectionOrder: [TodaySection]
     
     public var selection = Set<TodaySection.Name>()
@@ -42,26 +40,17 @@ class DashboardViewModel: ObservableObject {
                 sectionOrder.append(TodaySection(name: section.name, enabled: true))
             }
         }
+        // If item were removed since the last update, remove from the list
+        sectionOrder.forEach { (section) in
+            if !TodaySection.defaultSectionList.contains(section),
+                let obsoletSectionIndex = sectionOrder.firstIndex(of: section) {
+                sectionOrder.remove(at: obsoletSectionIndex)
+            }
+        }
         selection = Set(sectionOrder.filter(\.enabled).map(\.name))
     }
-        
-    func fetchListings() {
-        listingCancellable = NookazonService
-            .recentListings()
-            .receive(on: RunLoop.main)
-            .sink(receiveCompletion: { _ in }) { [weak self] listings in
-                self?.recentListings = listings
-        }
-    }
     
-    private func fetchIsland() {
-        /*
-        islandCancellable = TurnipExchangeService.shared
-            .fetchIslands()
-            .receive(on: RunLoop.main)
-            .sink(receiveValue: { [weak self] islands in
-                self?.island = islands.first
-            })
-        */
+    public func resetSectionList() {
+        sectionOrder = TodaySection.defaultSectionList
     }
 }

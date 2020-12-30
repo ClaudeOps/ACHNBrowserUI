@@ -7,24 +7,40 @@
 //
 
 import SwiftUI
+import SwiftUIKit
 import Backend
 import UI
 
-struct ItemsListView: View {
-    @ObservedObject var viewModel: ItemsViewModel
+struct ItemsView: View {
+    enum ContentMode {
+        case listLarge, listSmall, grid
+        
+        func iconName() -> String {
+            switch self {
+            case .listLarge:
+                return "rectangle.grid.1x2"
+            case .listSmall:
+                return "list.dash"
+            case .grid:
+                return "square.grid.3x2.fill"
+            }
+        }
+    }
+    
+    @StateObject var viewModel: ItemsViewModel
     @State private var showSortSheet = false
-    @State private var itemRowsDisplayMode: ItemRowView.DisplayMode = .large
+    @State private var contentMode: ContentMode = .grid
     let customTitle: String?
     
     init(category: Backend.Category, items: [Item]? = nil, keyword: String? = nil) {
         if let items = items {
-            viewModel = ItemsViewModel(category: category, items: items)
+            _viewModel = StateObject(wrappedValue: ItemsViewModel(category: category, items: items))
             customTitle = nil
         } else if let keyword = keyword {
-            viewModel = ItemsViewModel(meta: keyword)
+            _viewModel = StateObject(wrappedValue: ItemsViewModel(meta: keyword))
             customTitle = keyword
         } else {
-            viewModel = ItemsViewModel(category: category)
+            _viewModel = StateObject(wrappedValue: ItemsViewModel(category: category))
             customTitle = nil
         }
     }
@@ -43,21 +59,34 @@ struct ItemsListView: View {
     
     private var sortButton: some View {
         Button(action: {
-            self.showSortSheet.toggle()
+            showSortSheet.toggle()
         }) {
             Image(systemName: viewModel.sort == nil ? "arrow.up.arrow.down.circle" : "arrow.up.arrow.down.circle.fill")
-                .imageScale(.large)
+                .style(appStyle: .barButton)
+                .foregroundColor(.acText)
         }
+        .buttonStyle(BorderedBarButtonStyle())
+        .accentColor(Color.acText.opacity(0.2))
         .safeHoverEffectBarItem(position: .trailing)
     }
     
     private var layoutButton: some View {
         Button(action: {
-            self.itemRowsDisplayMode = self.itemRowsDisplayMode == .compact ? .large : .compact
+            switch contentMode {
+            case .listLarge:
+                contentMode = .listSmall
+            case .listSmall:
+                contentMode = .grid
+            case .grid:
+                contentMode = .listLarge
+            }
         }) {
-            Image(systemName: itemRowsDisplayMode == .large ? "rectangle.grid.1x2" : "list.dash")
-                .imageScale(.large)
+            Image(systemName: contentMode.iconName())
+                .style(appStyle: .barButton)
+                .foregroundColor(.acText)
         }
+        .buttonStyle(BorderedBarButtonStyle())
+        .accentColor(Color.acText.opacity(0.2))
         .safeHoverEffectBarItem(position: .trailing)
     }
     
@@ -90,44 +119,53 @@ struct ItemsListView: View {
         return ActionSheet(title: title, buttons: buttons)
     }
     
-    private var searchView: some View {
-        Group {
-            if viewModel.allowSearch {
-                SearchField(searchText: $viewModel.searchText)
-            }
-        }
-    }
-    
     var body: some View {
-        List {
-            Section(header: searchView) {
-                ForEach(currentItems) { item in
-                    NavigationLink(destination: LazyView(ItemDetailView(item: item))) {
-                        ItemRowView(displayMode: self.itemRowsDisplayMode, item: item)
-                            .listRowBackground(Color.acSecondaryBackground)
-                    }
-                }
-            }
-        }
-        .listStyle(GroupedListStyle())
-        .id(viewModel.sort)
+        contentView
         .modifier(DismissingKeyboardOnSwipe())
         .navigationBarTitle(customTitle != nil ?
             Text(LocalizedStringKey(customTitle!)) :
             Text(viewModel.category.label()),
                             displayMode: .automatic)
             .navigationBarItems(trailing:
-                HStack(spacing: 12) {
-                    layoutButton
-                    sortButton
-                })
+                                    HStack {
+                                        layoutButton
+                                        sortButton
+                                    })
         .actionSheet(isPresented: $showSortSheet, content: { self.sortSheet })
+    }
+    
+    @ViewBuilder
+    private var contentView: some View {
+        if contentMode == .grid {
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 100), spacing: 16)], spacing: 16) {
+                    ForEach(currentItems) { item in
+                        ItemGridItemView(item: item)
+                    }
+                }.background(Color.acBackground)
+            }
+        } else {
+            List {
+                Section(header: SearchField(searchText: $viewModel.searchText)) {
+                    ForEach(currentItems) { item in
+                        NavigationLink(destination: LazyView(ItemDetailView(item: item))) {
+                            ItemRowView(displayMode: contentMode == .listLarge ? .large : .compact,
+                                        item: item)
+                        }
+                        .listRowBackground(Color.acSecondaryBackground)
+                    }
+                }
+            }
+            .animation(.interactiveSpring())
+            .listStyle(GroupedListStyle())
+            .id(viewModel.sort)
+        }
     }
 }
 
 struct ItemsListView_Previews: PreviewProvider {
     static var previews: some View {
-        ItemsListView(category: .housewares)
+        ItemsView(category: .housewares)
             .environmentObject(Items.shared)
             .environmentObject(UserCollection.shared)
     }

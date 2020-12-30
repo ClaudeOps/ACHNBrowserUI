@@ -15,57 +15,49 @@ import UI
 struct TodayView: View {
     
     // MARK: - Vars
-    @EnvironmentObject private var uiState: UIState
-
-    @ObservedObject private var viewModel = DashboardViewModel()
-
+    @Environment(\.currentDate) private var currentDate
+    @StateObject private var viewModel = DashboardViewModel()
     @State private var selectedSheet: Sheet.SheetType?
             
     // MARK: - Body
     var body: some View {
         NavigationView {
             List {
-                if uiState.routeEnabled {
-                    uiState.route.map { route in
-                        NavigationLink(destination: route.makeDetailView(),
-                                       isActive: $uiState.routeEnabled) {
-                                        EmptyView()
-                        }.hidden()
-                    }
+                ForEach(viewModel.sectionOrder) { section in
+                    TodaySectionView(section: section,
+                                     viewModel: self.viewModel,
+                                     selectedSheet: self.$selectedSheet)
+                        .listRowBackground(Color.acSecondaryBackground)
                 }
-
-                Group {
-                    ForEach(viewModel.sectionOrder, id: \.self) { section in
-                        TodaySectionView(section: section,
-                                         viewModel: self.viewModel,
-                                         selectedSheet: self.$selectedSheet)
-                    }
-                    arrangeSectionsButton
+                
+                if UIDevice.current.userInterfaceIdiom != .pad {
+                    editSection
+                        .listRowBackground(Color.acSecondaryBackground)
                 }
             }
-            .listStyle(GroupedListStyle())
-            .environment(\.horizontalSizeClass, .regular)
+            .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("\(dateString.capitalized)"))
             .navigationBarItems(leading: aboutButton, trailing: settingsButton)
             .sheet(item: $selectedSheet, content: { Sheet(sheetType: $0) })
+            .onAppear(perform: NewsArticleService.shared.fetchNews)
+            .onAppear(perform: DodoCodeService.shared.refresh)
+            .onAppear(perform: DreamCodeService.shared.refresh)
             
-            ActiveCrittersView()
+            ActiveCrittersView(tab: .fish)
         }
     }
 
-    var arrangeSectionsButton: some View {
+    var editSection: some View {
         Section {
-            Button(action: { self.selectedSheet = .rearrange(viewModel: self.viewModel) }) {
+            NavigationLink(destination: TodaySectionEditView(viewModel: viewModel)) {
                 HStack {
                     Image(systemName: "arrow.up.arrow.down")
                         .font(.system(.body, design: .rounded))
                     Text("Change Section Order")
                         .font(.system(.body, design: .rounded))
                         .fontWeight(.semibold)
-                }
+                }.foregroundColor(.acHeaderBackground)
             }
-            .frame(maxWidth: .infinity)
-            .accentColor(.acHeaderBackground)
         }
     }
     
@@ -97,7 +89,7 @@ struct TodayView: View {
     private var dateString: String {
         let f = DateFormatter()
         f.setLocalizedDateFormatFromTemplate("EEEE, MMM d")
-        return f.string(from: Date())
+        return f.string(from: currentDate)
     }
 }
 

@@ -8,6 +8,7 @@
 
 import SwiftUI
 import Backend
+import Combine
 
 struct TabbarView: View {
     @EnvironmentObject private var uiState: UIState
@@ -17,43 +18,45 @@ struct TabbarView: View {
         ZStack(alignment: .bottom) {
             TabView(selection: $uiState.selectedTab) {
                 TodayView()
-                    .tag(UIState.Tab.dashboard)
                     .tabItem {
                         Image("icon-bells-tabbar")
                         Text("Dashboard")
                 }
+                .tag(UIState.Tab.dashboard)
                 
                 CategoriesView(categories: Category.items())
-                    .tag(UIState.Tab.items)
                     .tabItem {
                         Image("icon-leaf-tabbar")
                         Text("Catalog")
                 }
-                
+                .tag(UIState.Tab.items)
+    
                 TurnipsView()
-                    .tag(UIState.Tab.turnips)
                     .tabItem {
                         Image("icon-turnip-tabbar")
                         Text("Turnips")
                 }
+                .tag(UIState.Tab.turnips)
                 
                 VillagersListView()
                     .environmentObject(UserCollection.shared)
-                    .tag(UIState.Tab.villagers)
                     .tabItem {
                         Image("icon-villager-tabbar")
                         Text("Villagers")
                 }
+                .tag(UIState.Tab.villagers)
                 
                 CollectionListView()
-                    .tag(UIState.Tab.collection)
                     .tabItem {
                         Image("icon-cardboard-tabbar")
                         Text("Collection")
                 }
-                
+                .tag(UIState.Tab.collection)
             }
-            .accentColor(Color.white)
+            .environment(\.currentDate, viewModel.currentDate)
+            .onAppear {
+                viewModel.updateCurrentDateOnTabChange(selectedTabPublisher: uiState.$selectedTab)
+            }
             
             if viewModel.showPlayerView {
                 PlayerView()

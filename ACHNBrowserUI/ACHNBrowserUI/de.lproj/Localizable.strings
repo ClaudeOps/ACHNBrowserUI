@@ -32,16 +32,15 @@
 "Collection" = "Sammlung";
 
 // TodayView
-"Change Section Order" = "Ändere die Reihenfolge";
+"Change Section Order" = "Reihenfolge ändern";
 // TodaySectionEditView
-"Drag & Drop to Rearrange" = "Zum Anordnen halten und verschieben";
 "Hidden" = "Versteckt";
 "Today Sections" = "Heute Abschnitte";
 "Done" = "Fertig";
-" to re-order sections." = " to re-order sections.";
-"Check or un-check" = "Check or un-check";
-" rows to hide sections from the dashboard." = " rows to hide sections from the dashboard.";
-"Your top-most section will be the default detail view on iPad and Mac." = "Your top-most section will be the default detail view on iPad and Mac.";
+"Drag and drop" = "Drag & Drop";
+" to re-order sections." = " um die Reihenfolge zu ändern.";
+"Check or un-check" = "Aktiviere/deaktiviere";
+" rows to hide sections from the dashboard." = " Widgets, um sie auf dem Dashboard ein- oder auszublenden.";
 // TodayBirthdaySection
 "Birthdays" = "Geburtstage";
 "Today's Birthdays" = "Heutige Geburtstage";
@@ -53,6 +52,7 @@
 "Currently Available" = "Aktuell verfügbar";
 "%lld/%lld Bugs" = "%lld/%lld Insekten";
 "%lld/%lld Fish" = "%lld/%lld Fische";
+"%lld/%lld Sea Creatures" = "%lld/%lld Meerestiere";
 "%lld NEW" = "%lld NEU";
 // TodayEventsSection
 "Events" = "Ereignisse";
@@ -104,7 +104,7 @@ Du kannst das Abonnement jederzeit in deinen iTunes Kontoeinstellungen beenden. 
 // AboutView
 "About" = "Über";
 "The app" = "Die App";
-"Souce code / report an issue" = "Quell Code / Fehler melden";
+"Source code / report an issue" = "Quellcode / Fehler melden";
 "Rate the app on the App Store" = "Bewerte die App im App Store";
 "Privacy Policy" = "Datenschutzbestimmungen";
 "Terms of Use" = "Nutzungsbedingungen";
@@ -125,6 +125,8 @@ Du kannst das Abonnement jederzeit in deinen iTunes Kontoeinstellungen beenden. 
 "Bugs" = "Insekten";
 "You caught them all!" = "Du hast alle gefangen!";
 "New this month" = "Diesen Monat neu";
+"To catch now" = "Jetzt fangbar";
+"To catch later" = "Zu einer anderen Tageszeit";
 "To catch" = "Zu fangen";
 "Leaving this month" = "Nur noch diesen Monat";
 "Caught" = "Gefangen";
@@ -320,7 +322,7 @@ Du kannst das Abonnement jederzeit in deinen iTunes Kontoeinstellungen beenden. 
 "Jock" = "Sportlich";
 "Cranky" = "Miesepeter";
 "Smug" = "Selbstzufrieden";
-"Normal" = "Ausgeglichen";
+"Normal" = "Lieb";
 "Peppy" = "Schwungvoll";
 "Snooty" = "Hochnäsig";
 "Uchi" = "Große Schwester";
@@ -398,6 +400,7 @@ Du kannst das Abonnement jederzeit in deinen iTunes Kontoeinstellungen beenden. 
 "bugs" = "Insekten";
 "fish" = "Fische";
 "fossils" = "Fossilien";
+"seaCreatures" = "Meerestiere";
 // CategoriesView
 "Nature" = "Natur";
 "Wardrobe" = "Kleidung";
@@ -425,8 +428,8 @@ Du kannst das Abonnement jederzeit in deinen iTunes Kontoeinstellungen beenden. 
 "Available after unlocking the shovel in the story" = "Verfügbar nach dem Entsperren der Schaufel in der Geschichte";
 "Available from Able Sisters shop only during Festive Season" = "Nur während der Weihnachtszeit in der Schneiderei erhältlich";
 "Available from Able Sisters shop only" = "Nur in der Schneiderei erhältlich";
-"Available from either Mable's temporary shop or Able Sisters shop during Festive Season" = "Während der Weihnachtszeit erhältlich an Tinas Verkaufsstand oder in der Schneiderei.";
-"Available from either Mable's temporary shop or Able Sisters shop" = "Erhältlich an Tinas Verkaufsstand oder in der Schneiderei";
+"Available from either Mabel's temporary shop or Able Sisters shop during Festive Season" = "Während der Weihnachtszeit erhältlich an Tinas Verkaufsstand oder in der Schneiderei.";
+"Available from either Mabel's temporary shop or Able Sisters shop" = "Erhältlich an Tinas Verkaufsstand oder in der Schneiderei";
 "Available in all tiers of shops, including Timmy & Tommy before the shop is opened" = "Erhältlich bei Nepp & Schlepp in jeder Stufe des Ladens";
 "Available in Nook's Cranny (either upgrade tier) in the unique furniture slot" = "Erhältlich in Nooks Laden auf dem \"Einzigarige-Möbel\" Platz";
 "Available in Nook's Cranny (upgraded only)" = "Verfügbar in Nooks Laden (ausgebaut)";
@@ -492,6 +495,7 @@ Du kannst das Abonnement jederzeit in deinen iTunes Kontoeinstellungen beenden. 
 "Festive seasonal DIY using ornaments (from shaking trees)" = "Bastelanleitung aus der Weihnachtszeit; benötigt Ornamente (Bäume schütteln)";
 "Fishing (Bunny Day)" = "Angeln (Häschen-Tag)";
 "Fishing Tourney" = "Angel-Turnier";
+"Fishing tourney" = "Angel-Turnier";
 "Fishing up a boot" = "Stiefel angeln";
 "Fishing up all 3 trash items" = "Alle 3 Müllgegenstände geangelt";
 "Fishing up an empty can" = "Leere Dose angeln";
@@ -502,7 +506,7 @@ Du kannst das Abonnement jederzeit in deinen iTunes Kontoeinstellungen beenden. 
 "Flying near blue/purple/black flowers" = "Fliegt in der Nähe von blauen/lila/schwarzen Blumen";
 "Flying near flowers" = "Fliegt in der nähe von Blumen";
 "Flying near light sources" = "Fliegt in der nähe von Lichtquellen";
-"Flying near trash (boots, tires, cans)" = "Fliegt in der Nähe von Müll (Stiefel, Reifen, Dosen)";
+"Flying near trash (boots, tires, cans) or rotten turnips" = "Fliegt in der Nähe von Müll (Stiefel, Reifen, Dosen) und faulen Rüben";
 "Flying" = "Fliegt";
 "From hitting rocks" = "Felsen schlagen";
 "From Zipper after trading one of every egg (all 6 types) during Bunny Day." = "Von Ohs T. Hase nach dem Handel mit einem von jedem Ei (alle 6 Arten) während des Häschen-Tages.";
@@ -536,6 +540,7 @@ Du kannst das Abonnement jederzeit in deinen iTunes Kontoeinstellungen beenden. 
 "Mom" = "Mama";
 "Mushroom seasonal DIY" = "Pilz-Saison Bastelanleitung";
 "New Year's Eve" = "Silvester";
+"New Years Eve" = "Silvester";
 "Nintendo" = "Nintendo";
 "Nook Miles Exchange" = "Nook Meilen Austausch";
 "Nook Miles Redemption" = "Nook Meilen Belohnung";
@@ -557,7 +562,7 @@ Du kannst das Abonnement jederzeit in deinen iTunes Kontoeinstellungen beenden. 
 "On palm trees" = "Auf Palmen";
 "On rivers/ponds" = "An Flüssen/Teichen";
 "On rocks" = "Auf Felsen";
-"On rotten turnips" = "An faulen Rüben";
+"On rotten turnips" = "Auf faulen Rüben";
 "On the ground" = "Auf dem Boden";
 "On tree stumps" = "Auf Baumstümpfen";
 "On trees (any kind)" = "Auf Bäumen (jeglicher Art)";
@@ -706,7 +711,7 @@ Du kannst das Abonnement jederzeit in deinen iTunes Kontoeinstellungen beenden. 
 "Imported with success" = "Erfolgreich importiert";
 "Reset my collection" = "Sammlung zurücksetzen";
 "Your AC Helper collection file was imported with success." = "Deine AC Helper Sammlung wurde erfolgreich importiert.";
-"Are you sure?" = "Bist du sicher?";
+"Are you sure?" = "Bist du dir sicher?";
 "This will delete all your collected critters, items, villagers and items lists" = "Diese Aktion wird all deine gesammelt Tiere, Gegenstände, Besucher und persönliche Listen löschen.";
 
 // Added 2020-05-17
@@ -723,7 +728,7 @@ Du kannst das Abonnement jederzeit in deinen iTunes Kontoeinstellungen beenden. 
 "Rocks" = "Felsen";
 "Take your chance and go visit some mystery island!" = "Nutz deine Chance und besuche mysteriöse Inseln!";
 "Native" = "Nativ"; // TODO needs a better one
-"Normal" = "Normal";
+//"Normal" = "Normal"; // Overwrites translation for villager type
 "Gold" = "Gold";
 "Trash" = "Müll";
 "Bamboos" = "Bambus";
@@ -854,3 +859,102 @@ Du kannst das Abonnement jederzeit in deinen iTunes Kontoeinstellungen beenden. 
 
 // Added 2020-06-05
 "Contact / follow us on Twitter" = "Kontaktiere / folge uns auf Twitter";
+
+// Added 2020-06-06
+"Villager visits" = "Bewohner besuchen";
+"Who have you talked to today? Find the villagers you have visited and tap the home icon on the villager’s page to keep track." = "Mit wem hast du heute gesprochen? Markiere die Bewohner deiner Insel mithilfe des Home-Symbol auf der Bewohner Detailseite um hier deine Gespräche mit den Bewohnern im Blick zu behalten.";
+"Long press on a villager to see more info about them" = "Lange auf einen Bewohner tippen um mehr Informationen zu erhallten";
+
+// Added 2020-06-08
+"Medium w/Fin" = "Mittel mit Rückenflosse";
+"Large w/Fin" = "Groß mit Rückenflosse";
+"XX-Large" = "Sehr sehr groß";
+"Long" = "Lang";
+"Sea (rainy days)" = "Meer (an regnerische Tagen)";
+"Flying near water" = "Fliegt in der nähe von Wasser";
+
+// Added 2020-06-12
+// Dodo code
+"Please fill all the fields" = "Bitte füll alle Felder aus";
+"Dodo code" = "Dodo Code";
+"Dodo codes" = "Dodo Codes";
+"This Dodo code is invalid" = "Der Dodo Code ist ungültig";
+"Island description" = "Inselbeschreibung";
+"Native fruit" = "Inselfrucht";
+"Add your Dodo code" = "Dodo Code hinzufügen";
+"Hemisphere: %@" = "Hemisphäre: %@";
+"Do you really want to report this Dodo code?" = "Möchtest du diesen Dodo Code wirklich melden?";
+"Do you really want to delete your Dodo code?" = "Möchtest du deinen Dodo Code wirklich löschen?";
+"Delete" = "Löschen";
+"Report" = "Melden";
+"Latest Dodo code" = "Aktuellster Dodo Code";
+
+"dodocode.footer" = "Sobald der Dodo Code gespeichert ist, ist er für andere in der Liste sichtbar
+Bitte stell sicher, dass dein Flugsteig geöffnet ist, bevor du den Code speicherst.
+Du kannst den Code jederzeit löschen und deinen Flugsteig schließen.
+Bitte geht respektvoll miteinander um. Jeder gemeldete Dodo Code wird gelöscht.";
+"iCloud not enabled" = "iCloud ist nicht aktiviert";
+"You need an iCloud account to add your Dodo code" = "Du brauchst einen iCloud Account um einen Dodo Code hinzufügen zu können";
+"ACDodoCode.notification.title" = "Neuer Dodo Code verfügbar";
+"ACDodoCode.notification.subtitle" = "Jemand hat seine Insel für Besucher geöffnet - öffne die App und schau nach!";
+"Visitor" = "Besucher";
+"Edit your Dodo code" = "Dodo Code bearbeiten";
+"Notifications" = "Benachrichtigungen";
+"Get notified of new Dodo codes" = "Bei neuen Codes benachrichtigen";
+"To help us support the application and get notifications when a new Dodo code is posted, you can try out AC Helper+" = "Um die Entwicklung der App zu unterstützen und Benachrichtigungen über neue Dodo Codes zu erhalten, probiere AC Helper+ aus";
+
+// dodo code comments
+"Comments" = "Kommentare";
+"Be the first to leave a comment!" = "Erstelle den ersten Kommentar!";
+"%@ from %@" = "%@ von %@";
+"In order to add a comment you must add an island name and a username. Tap here to add them in settings" = "Um einen Kommentar hinzufügen zu können musst deinen Inselname und Spielernamen hinzufügen. Hier drücken, um zu den Einstellungen zu gelangen";
+"Add your comment" = "Kommentar hinzufügen";
+"Send" = "Absenden";
+"In game name / username" = "Spielername / Benutzername";
+"You need to have an iCloud account in your device settings in order to add comments" = "Du muss in iCloud eingeloggt sein, um kommentieren zu können";
+"ACComment.notification.title" = "Jemand hat einen Kommentar zu deinem Dodo Code hinterlassen";
+"ACComment.notification.subtitle" = "Ein neuer Kommentar wurde unter deinem Dodo Code hinterlassen. Öffne die App und schau nach!";
+
+// Added 2020-06-18
+"Contact / follow us on Instagram" = "Kontaktiere / folge uns auf Instagram";
+"Meet the community of ACNH Connect" = "Triff die Community von ACNH Connect";
+
+// Added 2020-06-19
+"News" = "Neuigkeiten";
+"Get notified when a news is posted" = "Bei Neuigkeiten benachrichtigen";
+"ACNew.notification.title" = "Eine Neuigkeit wurde veröffentlicht";
+"ACNew.notification.subtitle" = "Eine Neuigkeit über die App oder das Spiel wurde veröffentlicht. Öffne die App und schau nach!";
+
+// Summer Patch - added 2020-07-04
+"Underwater" = "Unterwasser";
+"Movement speed:" = "Bewegungsgeschwindigkeit:";
+"Very slow" = "Sehr langsam";
+"Slow" = "Langsam";
+"Very fast" = "Sehr schnell";
+"Fast" = "Schnell";
+"Stationary" = "Stillstehend";
+
+// Added 2020-07-07
+"Clothing Other" = "Taucheranzüge";
+"Sea Creatures" = "Meerestiere";
+
+// Summer Patch II - added 2020-08-02
+"There are no dream codes yet. Visit Luna in your dreams, generate your islands dream code and add it here." = "Es gibt noch keine Traum-Codes. Besuche Luna in deinen Träumen, generiere den Traum-Code zu deiner Insel und stelle ihn hier ein.";
+"ACDreamCode.notification.title" = "Neuer Traum Code verfügbar";
+"ACDreamCode.notification.subtitle" = "Jemand hat den Traum-Code seiner Insel hinzugefügt - öffne die App und schau nach!";
+"Dream code" = "Traum Code";
+"Dream codes" = "Traum Codes";
+"This Dream code is invalid" = "Dieser Traum Code ist ungültig";
+"Edit your Dream code" = "Traum Code bearbeiten";
+"Add your Dream code" = "Traum Code hinzufügen";
+"dreamcode.footer" = "Sobald der Traum Code gespeichert ist, ist er für andere in der Liste sichtbar
+Du kannst deinen Traum Code jeder Zeit bearbeiten oder löschen. Du kannst nur einen Traum Code gleichzeitig einstellen.
+Jeder gemeldete Dodo Code wird gelöscht.";
+"Get notified of new dream codes" = "Bei neuen Traum Codes benachrichtigen";
+"No dream codes available yet, add your own to let other players visit your island in their dreams" = "Keine Traum Codes verfügbar. Füge deinen eigenen hinzu um anderen Spielern Zugang zu deiner Insel in ihren Träumen zu ermöglichen.";
+"You need an iCloud account to add your dream code" = "Du brauchst einen iCloud Account um deinen Traum Code hinzufügen zu können";
+"Do you really want to report this dream code?" = "Möchtest du diesen Traum Code wirklich melden?";
+"Do you really want to delete your dream code?" = "Möchtest du deinen Traum Code wirklich löschen?";
+"Sort" = "Sortiern";
+"creationDate" = "Datum";
+"upvotes" = "Bewertungen";

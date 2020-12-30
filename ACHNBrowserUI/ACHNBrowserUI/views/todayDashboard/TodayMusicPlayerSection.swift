@@ -18,29 +18,28 @@ struct TodayMusicPlayerSection: View {
     
     @State private var presentedSheet: Sheet.SheetType?
     @State private var isNavigationActive = false
-    
+
+    @ViewBuilder
     var body: some View {
-        Section(header: SectionHeaderView(text: "Music player",
-                                          icon: "music.note"))
-        {
-            if musicPlayerManager.currentSongItem != nil {
+        if let song = musicPlayerManager.currentSongItem {
+            VStack(spacing: 12) {
                 NavigationLink(destination: songsList, isActive: $isNavigationActive) {
-                    ItemRowView(displayMode: .largeNoButton, item: musicPlayerManager.currentSongItem!)
+                    ItemRowView(displayMode: .largeNoButton, item: song)
                 }
                 playerView
-            } else {
-                RowLoadingView(isLoading: .constant(true))
             }
+        } else {
+            RowLoadingView()
         }
     }
     
     
     private var playerView: some View {
         VStack(spacing: 8) {
-            ProgressView(progress: CGFloat(musicPlayerManager.playProgress),
-                         trackColor: .acText,
-                         progressColor: .acHeaderBackground,
-                         height: 5)
+            ProgressBar(progress: CGFloat(musicPlayerManager.playProgress),
+                        trackColor: .acText,
+                        progressColor: .acHeaderBackground,
+                        height: 5)
             HStack {
                 Text(musicPlayerManager.timeElasped)
                     .foregroundColor(.acText)
@@ -94,28 +93,29 @@ struct TodayMusicPlayerSection: View {
             Section {
                 ForEach(items.categories[.music] ?? []) { item in
                     ItemRowView(displayMode: .largeNoButton, item: item)
-                        .onTapGesture {
+                    .onTapGesture {
                             if let song = self.musicPlayerManager.matchSongFrom(item: item) {
                                 self.musicPlayerManager.currentSong = song
                                 self.musicPlayerManager.isPlaying = true
                                 self.isNavigationActive = false
                             }
                     }
+                    .listRowBackground(Color.acSecondaryBackground)
                 }
             }
         }
         .navigationBarTitle(Text("Tracks"))
-        .listStyle(GroupedListStyle())
-        .environment(\.horizontalSizeClass, .regular)
+        .listStyle(InsetGroupedListStyle())
         .sheet(item: $presentedSheet, content: { Sheet(sheetType: $0) })
     }
 
-    private var playModeIcon: Image {
+    @ViewBuilder
+    private var playModeIcon: some View {
         switch musicPlayerManager.playmode {
         case .random:
-            return Image(systemName: "shuffle")
+            Image(systemName: "shuffle")
         case .ordered:
-            return Image(systemName: "list.number")
+            Image(systemName: "list.number")
         }
     }
 }
@@ -126,8 +126,7 @@ struct TodayMusicPlayer_Previews: PreviewProvider {
             List {
                 TodayMusicPlayerSection()
             }
-            .listStyle(GroupedListStyle())
-            .environment(\.horizontalSizeClass, .regular)
+            .listStyle(InsetGroupedListStyle())
             .environmentObject(MusicPlayerManager.shared)
             .environmentObject(Items.shared)
         }

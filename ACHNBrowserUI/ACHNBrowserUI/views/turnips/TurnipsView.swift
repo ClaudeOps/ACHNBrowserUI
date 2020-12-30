@@ -35,7 +35,6 @@ struct TurnipsView: View {
     @ObservedObject private var viewModel = TurnipsViewModel()
     @State private var presentedSheet: Sheet.SheetType?
     @State private var turnipsDisplay: TurnipsDisplay = .minMax
-    @State private var enableTurnipsExchange = false
     
     private let labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     
@@ -43,33 +42,31 @@ struct TurnipsView: View {
     // MARK: - Body
     var body: some View {
         NavigationView {
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                TurnipsFormView().environmentObject(subManager)
-            }
             List {
-                if subManager.subscriptionStatus == .notSubscribed {
-                    subscriptionSection
-                }
-                if UIDevice.current.userInterfaceIdiom != .pad ||
-                    (UIDevice.current.orientation == .portrait ||
-                        UIDevice.current.orientation == .portraitUpsideDown){
-                    Section(header: SectionHeaderView(text: "Your prices", icon: "pencil")) {
-                        Button(action: {
-                            self.presentedSheet = .turnipsForm(subManager: self.subManager)
-                        }) {
-                            Text(TurnipFields.exist() ? "Edit your in game prices" : "Add your in game prices")
-                                .foregroundColor(.acHeaderBackground)
+                Group {
+                    if subManager.subscriptionStatus == .notSubscribed {
+                        subscriptionSection
+                    }
+                    if UIDevice.current.userInterfaceIdiom != .pad ||
+                        (UIDevice.current.orientation == .portrait ||
+                            UIDevice.current.orientation == .portraitUpsideDown){
+                        Section(header: SectionHeaderView(text: "Your prices", icon: "pencil")) {
+                            Button(action: {
+                                self.presentedSheet = .turnipsForm(subManager: self.subManager)
+                            }) {
+                                Text(TurnipFields.exist() ? "Edit your in game prices" : "Add your in game prices")
+                                    .foregroundColor(.acHeaderBackground)
+                            }
                         }
                     }
-                }
-                predictionsSection
-                if turnipService.turnipProhetUrl != nil {
-                    prophetSection
-                }
-                exchangeSection
+                    predictionsSection
+                    if turnipService.turnipProhetUrl != nil {
+                        prophetSection
+                    }
+                }.listRowBackground(Color.acSecondaryBackground)
             }
-            .listStyle(GroupedListStyle())
-            .environment(\.horizontalSizeClass, .regular)
+            .listStyle(InsetGroupedListStyle())
+            .animation(.interactiveSpring())
             .navigationBarTitle("Turnips",
                                 displayMode: .automatic)
             .navigationBarItems(trailing: shareButton)
@@ -78,11 +75,7 @@ struct TurnipsView: View {
             })
         }
         .onAppear(perform: NotificationManager.shared.registerForNotifications)
-        .onAppear {
-            if self.enableTurnipsExchange {
-                self.viewModel.fetchIslands()
-            }
-        }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
@@ -95,8 +88,7 @@ extension TurnipsView {
                     self.predictionsSection
                 }
             }
-            .listStyle(GroupedListStyle())
-            .environment(\.horizontalSizeClass, .regular)
+            .listStyle(InsetGroupedListStyle())
             .navigationViewStyle(StackNavigationViewStyle())
             .frame(width: 350, height: 650).asImage()
             self.presentedSheet = .share(content: [ItemDetailSource(name: "Turnips prediction", image: image)])
@@ -136,51 +128,73 @@ extension TurnipsView {
         }
     }
     
+    private var predictionSelectorView: some View {
+        Picker(selection: $turnipsDisplay, label: Text("")) {
+            ForEach(TurnipsDisplay.allCases, id: \.self) { section in
+                Text(LocalizedStringKey(section.rawValue.capitalized))
+            }
+        }
+        .pickerStyle(SegmentedPickerStyle())
+    }
+    
+    private var predictionFooterView: some View {
+        Text(viewModel.pendingNotifications == 0 ? "" :
+                "\(viewModel.pendingNotifications - 1) upcomingDailyNotifications")
+            .font(.footnote)
+            .foregroundColor(.catalogUnselected)
+            .lineLimit(nil)
+    }
+    
+    @ViewBuilder
+    private var predictionHeaderView: some View {
+        if turnipsDisplay == .profits && viewModel.averagesProfits != nil {
+            Text("Profits estimates are computed using the average of the current period")
+                .foregroundColor(.acSecondaryText)
+        }
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 50)), count: 3),
+                  alignment: .center) {
+            ForEach(["Day", "AM", "PM"], id: \.self) { label in
+                HStack {
+                    Text(LocalizedStringKey(label)).fontWeight(.bold)
+                    if label == "Day" {
+                        Spacer()
+                    }
+                }
+            }
+        }
+    }
+    
     private var predictionsSection: some View {
         Section(header: SectionHeaderView(text: turnipsDisplay.title(), icon: "dollarsign.circle.fill"),
-                footer: Text(viewModel.pendingNotifications == 0 ? "" :
-                    "\(viewModel.pendingNotifications - 1) upcomingDailyNotifications")
-                    .font(.footnote)
-                    .foregroundColor(.catalogUnselected)
-                    .lineLimit(nil)) {
+                footer: predictionFooterView) {
             if viewModel.averagesPrices != nil && viewModel.minMaxPrices != nil {
-                Picker(selection: $turnipsDisplay, label: Text("")) {
-                    ForEach(TurnipsDisplay.allCases, id: \.self) { section in
-                        Text(LocalizedStringKey(section.rawValue.capitalized))
-                    }
-                }
-                .pickerStyle(SegmentedPickerStyle())
+                predictionSelectorView
 
-                if turnipsDisplay != .chart {
-                    if turnipsDisplay == .profits && viewModel.averagesProfits != nil {
-                        Text("Profits estimates are computed using the average of the current period")
-                            .foregroundColor(.acSecondaryText)
-                    }
-                    GridStack<AnyView>(rows: 1, columns: 3) { _, column in
-                        switch column {
-                        case 0: return Text("Day").fontWeight(.bold).eraseToAnyView()
-                        case 1: return Text("AM").fontWeight(.bold).eraseToAnyView()
-                        case 2: return Text("PM").fontWeight(.bold).eraseToAnyView()
-                        default: return EmptyView().eraseToAnyView()
-                        }
-                    }
-                }
-                if turnipsDisplay == .average {
-                    GridStack(rows: labels.count, columns: 3, spacing: 16, content: averageGridValues)
-                }
-                else if turnipsDisplay == .minMax {
-                    GridStack(rows: labels.count, columns: 3, spacing: 16, content: minMaxGridValues)
-                } else if turnipsDisplay == .profits {
+                switch turnipsDisplay {
+                case .minMax:
+                    predictionHeaderView
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 50)),
+                                             count: 3),
+                              content:minMaxGridValues)
+                case .average:
+                    predictionHeaderView
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 50)),
+                                             count: 3),
+                              content:averageGridValues)
+                case .profits:
+                    predictionHeaderView
                     if viewModel.averagesProfits != nil {
-                        GridStack(rows: labels.count, columns: 3, spacing: 16, content: averageProfitGridValues)
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 50)),
+                                                 count: 3),
+                                  content:averageProfitGridValues)
                     } else {
                         Text("Please add the amount of turnips you bought and for how much")
                             .foregroundColor(.acHeaderBackground)
                             .onTapGesture {
                                 self.presentedSheet = .turnipsForm(subManager: self.subManager)
-                        }
+                            }
                     }
-                } else if turnipsDisplay == .chart {
+                case .chart:
                     if viewModel.predictions != nil {
                         TurnipsChartView(
                             predictions: viewModel.predictions!,
@@ -191,7 +205,7 @@ extension TurnipsView {
                             .foregroundColor(.acHeaderBackground)
                             .onTapGesture {
                                 self.presentedSheet = .turnipsForm(subManager: self.subManager)
-                        }
+                            }
                     }
                 }
             } else {
@@ -215,77 +229,75 @@ extension TurnipsView {
             }
         }
     }
-    
-    private var exchangeSection: some View {
-        Section(header: SectionHeaderView(text: "Turnip.Exchange", icon: "bitcoinsign.circle.fill")) {
-            if enableTurnipsExchange {
-                if viewModel.islands?.isEmpty == false {
-                    viewModel.islands.map {
-                        ForEach($0) { island in
-                            NavigationLink(destination: IslandDetailView(island: island)) {
-                                TurnipIslandRow(island: island)
-                            }
-                        }
-                    }
-                } else {
-                    RowLoadingView(isLoading: .constant(true))
-                }
-            } else {
-                Button(action: {
-                    self.enableTurnipsExchange = true
-                    self.viewModel.fetchIslands()
-                }) {
-                    Text("View Turnip.Exchange islands")
-                        .foregroundColor(.acHeaderBackground)
-                }
-            }
-        }
-    }
 }
 
 extension TurnipsView {
     private enum Meridian { case am, pm }
 
-    private func gridHeader(column: Int) -> some View {
-        switch column {
-        case 0: return Text("Day").fontWeight(.bold)
-        case 1: return Text("AM").fontWeight(.bold)
-        case 2: return Text("PM").fontWeight(.bold)
-        default: return Text("").fontWeight(.bold)
-        }
-    }
-
     private func weekDaysText(row: Int) -> some View {
-        Text(LocalizedStringKey(labels[row]))
-            .font(.body)
-            .foregroundColor(.acText)
-            .eraseToAnyView()
+        HStack {
+            Text(LocalizedStringKey(labels[row]))
+                .font(.body)
+                .foregroundColor(.acText)
+            Spacer()
+        }
     }
-
-    private func averageGridValues(row: Int, column: Int) -> some View {
-        switch column {
-        case 0: return weekDaysText(row: row).eraseToAnyView()
-        case 1: return averagePriceText(dayNumber: row, meridian: .am).eraseToAnyView()
-        case 2: return averagePriceText(dayNumber: row, meridian: .pm).eraseToAnyView()
-        default: return EmptyView().eraseToAnyView()
+    
+    struct GridContent<Content: View>: View {
+        let rows: Int
+        let columns: Int
+        let content: (Int, Int) -> Content
+        
+        init(rows: Int, columns: Int, @ViewBuilder content: @escaping (Int, Int) -> Content) {
+            self.rows = rows
+            self.columns = columns
+            self.content = content
+        }
+        
+        var body: some View {
+            ForEach(0..<rows) { row in
+                ForEach(0..<columns) { column in
+                    Group {
+                        content(row, column)
+                    }.frame(height: 50)
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func averageGridValues() -> some View {
+        GridContent(rows: labels.count, columns: 3) { row, column in
+            switch column {
+            case 0: weekDaysText(row: row)
+            case 1: averagePriceText(dayNumber: row, meridian: .am)
+            case 2: averagePriceText(dayNumber: row, meridian: .pm)
+            default: EmptyView()
+            }
         }
     }
 
-    private func minMaxGridValues(row: Int, column: Int) -> some View {
-        switch column {
-        case 0: return weekDaysText(row: row).eraseToAnyView()
-        case 1: return minMaxPriceText(dayNumber: row, meridian: .am).eraseToAnyView()
-        case 2: return minMaxPriceText(dayNumber: row, meridian: .pm).eraseToAnyView()
-        default: return EmptyView().eraseToAnyView()
+    @ViewBuilder
+    private func minMaxGridValues() -> some View {
+        GridContent(rows: labels.count, columns: 3) { row, column in
+            switch column {
+            case 0: weekDaysText(row: row)
+            case 1: minMaxPriceText(dayNumber: row, meridian: .am)
+            case 2: minMaxPriceText(dayNumber: row, meridian: .pm)
+            default: EmptyView()
+            }
         }
     }
 
-    private func averageProfitGridValues(row: Int, column: Int) -> some View {
-        switch column {
-        case 0: return weekDaysText(row: row).eraseToAnyView()
-        case 1: return averageProfitText(dayNumber: row, meridian: .am).eraseToAnyView()
-        case 2: return averageProfitText(dayNumber: row, meridian: .pm).eraseToAnyView()
-        default: return EmptyView().eraseToAnyView()
+    @ViewBuilder
+    private func averageProfitGridValues() -> some View {
+        GridContent(rows: labels.count, columns: 3) { row, column in
+            switch column {
+            case 0: weekDaysText(row: row)
+            case 1: averageProfitText(dayNumber: row, meridian: .am)
+            case 2: averageProfitText(dayNumber: row, meridian: .pm)
+            default: EmptyView()
+            }
         }
     }
 
@@ -309,7 +321,7 @@ extension TurnipsView {
             let averagePrice = meridian == .am ? averagePrices.first : averagePrices.last,
             let minMaxPricesForTheDay = viewModel.minMaxPrices?[dayNumber],
             let minMaxPrices = meridian == .am ? minMaxPricesForTheDay.first : minMaxPricesForTheDay.last else {
-                return EmptyView().eraseToAnyView()
+            return EmptyView().eraseToAnyView()
         }
 
         let isEntered = averagePrice == minMaxPrices.first && averagePrice == minMaxPrices.last

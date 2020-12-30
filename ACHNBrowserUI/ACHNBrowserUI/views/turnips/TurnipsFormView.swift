@@ -13,6 +13,7 @@ struct TurnipsFormView: View {
     // MARK: - Properties
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.currentDate) private var currentDate
     
     @State private var fields = TurnipFields.decode()
     @State private var enableNotifications = SubscriptionManager.shared.subscriptionStatus == .subscribed
@@ -34,10 +35,12 @@ struct TurnipsFormView: View {
     // MARK: - Body
     var body: some View {
         List {
-            configurationSection
-            pricesSection
+            Group {
+                configurationSection
+                pricesSection
+            }.listRowBackground(Color.acSecondaryBackground)
         }
-        .listStyle(GroupedListStyle())
+        .listStyle(InsetGroupedListStyle())
         .modifier(AdaptsToSoftwareKeyboard())
         .navigationBarItems(trailing: saveButton)
         .navigationBarTitle("Add your turnip prices", displayMode: .inline)
@@ -69,7 +72,6 @@ extension TurnipsFormView {
             self.fields.amount = Int($0) ?? 0
         })
         return TextField("... 📈 ...", text: amount)
-            .multilineTextAlignment(.trailing)
             .keyboardType(.numberPad)
             .foregroundColor(.acHeaderBackground)
     }
@@ -110,7 +112,6 @@ extension TurnipsFormView {
                 Text("Buy price")
                 Spacer()
                 TextField("... 🔔 ...", text: $fields.buyPrice)
-                    .multilineTextAlignment(.trailing)
                     .keyboardType(.numberPad)
                     .foregroundColor(.acHeaderBackground)
             }

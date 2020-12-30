@@ -11,36 +11,22 @@ import Backend
 import UI
 
 struct TodayBirthdaysSection: View {
-    @ObservedObject private var viewModel = VillagersViewModel()
+    @Environment(\.currentDate) private static var currentDate
+    @StateObject private var viewModel = VillagersViewModel(currentDate: Self.currentDate)
 
     var headerText: String {
         viewModel.todayBirthdays.count > 1 ? "Today's Birthdays" : "Today's Birthday"
     }
     
-    private func formattedDate(for villager: Villager) -> Date {
-        guard let birthday = villager.birthday else { return Date() }
-        let formatter = DateFormatter()
-        
-        formatter.dateFormat = "d/M"
-        return formatter.date(from: birthday) ?? Date()
-    }
-
-    private func birthdayDay(for villager: Villager) -> String {
-        let formatter = DateFormatter()
-        formatter.setLocalizedDateFormatFromTemplate("dd")
-        return formatter.string(from: formattedDate(for: villager))
-    }
-
-    private func birthdayMonth(for villager: Villager) -> String {
-        let formatter = DateFormatter()
-        formatter.setLocalizedDateFormatFromTemplate("MMM")
-        return formatter.string(from: formattedDate(for: villager))
-    }
-
     var body: some View {
-        Section(header: SectionHeaderView(text: headerText, icon: "gift.fill")) {
-            if viewModel.todayBirthdays.isEmpty {
-                RowLoadingView(isLoading: .constant(true))
+        Group {
+            if viewModel.isLoading {
+                RowLoadingView()
+            } else if viewModel.todayBirthdays.isEmpty {
+                Text("No Birthday today...")
+                    .font(.system(.caption, design: .rounded))
+                    .fontWeight(.bold)
+                    .foregroundColor(.acText)
             } else {
                 ForEach(viewModel.todayBirthdays, id: \.id) { villager in
                     NavigationLink(destination: LazyView(VillagerDetailView(villager: villager))) {
@@ -55,11 +41,11 @@ struct TodayBirthdaysSection: View {
     private func makeCell(for villager: Villager) -> some View {
         HStack {
             VStack {
-                Text(birthdayMonth(for: villager))
+                Text(villager.birthdayMonth())
                     .font(.system(.caption, design: .rounded))
                     .fontWeight(.bold)
                     .foregroundColor(.acText)
-                Text(birthdayDay(for: villager))
+                Text(villager.birthdayDay())
                     .font(.system(.subheadline, design: .rounded))
                     .fontWeight(.bold)
                     .foregroundColor(.acText)
@@ -92,8 +78,7 @@ struct TodayBirthdaysSection_Previews: PreviewProvider {
             List {
                 TodayBirthdaysSection()
             }
-            .listStyle(GroupedListStyle())
-            .environment(\.horizontalSizeClass, .regular)
+            .listStyle(InsetGroupedListStyle())
         }
         .previewLayout(.fixed(width: 375, height: 500))
     }
